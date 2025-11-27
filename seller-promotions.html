@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khuyến mãi & Báo cáo | Shopee Seller</title>
+    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/grid.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/responsive.css">
+    <link rel="stylesheet" href="./assets/css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="seller-page">
+    <header class="seller-header">
+        <div class="grid wide">
+            <div class="seller-header__content">
+                <a href="./index.html" class="seller-header__logo">
+                    <img src="./assets/img/logo/shopee-logo.png" alt="Shopee logo">
+                </a>
+                <nav class="seller-nav">
+                    <a href="./seller-products.html" class="seller-nav__link">
+                        <i class="fas fa-box"></i> Sản phẩm
+                    </a>
+                    <a href="./seller-promotions.html" class="seller-nav__link seller-nav__link--active">
+                        <i class="fas fa-tags"></i> Khuyến mãi & Báo cáo
+                    </a>
+                </nav>
+                <div class="seller-header__user">
+                    <span id="sellerName">Người bán</span>
+                    <a href="./seller-login.html" class="seller-logout">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="seller-main">
+        <div class="grid wide">
+            <div class="seller-container">
+                <h1 class="seller-title">Khuyến mãi & Báo cáo</h1>
+
+                <div class="seller-tabs">
+                    <button class="seller-tab seller-tab--active" data-tab="promotions">Khuyến mãi</button>
+                    <button class="seller-tab" data-tab="reports">Báo cáo</button>
+                </div>
+
+                <!-- Promotions Tab -->
+                <div class="seller-tab-content seller-tab-content--active" id="promotionsTab">
+                    <div class="seller-toolbar">
+                        <h2>Quản lý Khuyến mãi</h2>
+                        <button class="btn btn--primary" id="addPromotionBtn">
+                            <i class="fas fa-plus"></i> Tạo khuyến mãi mới
+                        </button>
+                    </div>
+
+                    <div class="seller-promotions" id="promotionsList">
+                        <div class="seller-promotion-card">
+                            <div class="seller-promotion-header">
+                                <h3>Giảm giá 20% cho tất cả sản phẩm</h3>
+                                <span class="seller-promotion-status seller-promotion-status--active">Đang hoạt động</span>
+                            </div>
+                            <div class="seller-promotion-body">
+                                <p><strong>Thời gian:</strong> 01/01/2025 - 31/01/2025</p>
+                                <p><strong>Mức giảm:</strong> 20%</p>
+                                <p><strong>Sản phẩm áp dụng:</strong> Tất cả</p>
+                            </div>
+                            <div class="seller-promotion-actions">
+                                <button class="seller-action-btn" data-action="edit-promo">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </button>
+                                <button class="seller-action-btn" data-action="delete-promo">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="seller-promotion-card">
+                            <div class="seller-promotion-header">
+                                <h3>Mua 2 tặng 1</h3>
+                                <span class="seller-promotion-status seller-promotion-status--pending">Sắp diễn ra</span>
+                            </div>
+                            <div class="seller-promotion-body">
+                                <p><strong>Thời gian:</strong> 15/02/2025 - 28/02/2025</p>
+                                <p><strong>Loại:</strong> Mua 2 tặng 1</p>
+                                <p><strong>Sản phẩm áp dụng:</strong> SP001, SP002</p>
+                            </div>
+                            <div class="seller-promotion-actions">
+                                <button class="seller-action-btn" data-action="edit-promo">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </button>
+                                <button class="seller-action-btn" data-action="delete-promo">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Tab -->
+                <div class="seller-tab-content" id="reportsTab">
+                    <div class="seller-reports">
+                        <div class="seller-report-cards">
+                            <div class="seller-report-card">
+                                <div class="seller-report-icon seller-report-icon--sales">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div class="seller-report-info">
+                                    <h3>Doanh thu tháng này</h3>
+                                    <p class="seller-report-value">125.000.000đ</p>
+                                    <p class="seller-report-change seller-report-change--positive">
+                                        <i class="fas fa-arrow-up"></i> +15% so với tháng trước
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="seller-report-card">
+                                <div class="seller-report-icon seller-report-icon--orders">
+                                    <i class="fas fa-shopping-bag"></i>
+                                </div>
+                                <div class="seller-report-info">
+                                    <h3>Đơn hàng</h3>
+                                    <p class="seller-report-value">342</p>
+                                    <p class="seller-report-change seller-report-change--positive">
+                                        <i class="fas fa-arrow-up"></i> +8% so với tháng trước
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="seller-report-card">
+                                <div class="seller-report-icon seller-report-icon--products">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                                <div class="seller-report-info">
+                                    <h3>Sản phẩm đã bán</h3>
+                                    <p class="seller-report-value">1,245</p>
+                                    <p class="seller-report-change seller-report-change--positive">
+                                        <i class="fas fa-arrow-up"></i> +12% so với tháng trước
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="seller-report-card">
+                                <div class="seller-report-icon seller-report-icon--views">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <div class="seller-report-info">
+                                    <h3>Lượt xem</h3>
+                                    <p class="seller-report-value">15,678</p>
+                                    <p class="seller-report-change seller-report-change--positive">
+                                        <i class="fas fa-arrow-up"></i> +25% so với tháng trước
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="seller-report-chart">
+                            <h2>Biểu đồ Doanh thu (7 ngày qua)</h2>
+                            <div class="seller-chart-placeholder">
+                                <canvas id="revenueChart" width="800" height="300"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="seller-report-table">
+                            <h2>Top sản phẩm bán chạy</h2>
+                            <table class="seller-table">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Đã bán</th>
+                                        <th>Doanh thu</th>
+                                        <th>Tỷ lệ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Thanh Thanh 2000 1m57 46kg 88-62-89</td>
+                                        <td>245</td>
+                                        <td>49.000.000đ</td>
+                                        <td>
+                                            <div class="seller-progress-bar">
+                                                <div class="seller-progress-fill" style="width: 85%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Hồng Ánh 1998 1m62 48kg 89-64-91</td>
+                                        <td>198</td>
+                                        <td>49.500.000đ</td>
+                                        <td>
+                                            <div class="seller-progress-bar">
+                                                <div class="seller-progress-fill" style="width: 70%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Quỳnh Như 1999 1m65 49kg 90-62-89</td>
+                                        <td>156</td>
+                                        <td>43.680.000đ</td>
+                                        <td>
+                                            <div class="seller-progress-bar">
+                                                <div class="seller-progress-fill" style="width: 55%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Promotion Modal -->
+    <div class="seller-modal" id="addPromotionModal" style="display: none;">
+        <div class="seller-modal__content">
+            <div class="seller-modal__header">
+                <h2>Tạo khuyến mãi mới</h2>
+                <button class="seller-modal__close" id="closePromoModal">&times;</button>
+            </div>
+            <form class="seller-modal__form" id="promotionForm">
+                <label class="auth-label">Tên chương trình</label>
+                <input type="text" class="auth-input" name="name" required>
+
+                <label class="auth-label">Loại khuyến mãi</label>
+                <select class="auth-input" name="type" required>
+                    <option value="discount">Giảm giá %</option>
+                    <option value="buy2get1">Mua 2 tặng 1</option>
+                    <option value="free-ship">Miễn phí vận chuyển</option>
+                </select>
+
+                <label class="auth-label">Mức giảm (%)</label>
+                <input type="number" class="auth-input" name="discount" min="0" max="100">
+
+                <label class="auth-label">Ngày bắt đầu</label>
+                <input type="date" class="auth-input" name="startDate" required>
+
+                <label class="auth-label">Ngày kết thúc</label>
+                <input type="date" class="auth-input" name="endDate" required>
+
+                <label class="auth-label">Sản phẩm áp dụng</label>
+                <select class="auth-input" name="products" multiple>
+                    <option value="all">Tất cả sản phẩm</option>
+                    <option value="sp001">SP001</option>
+                    <option value="sp002">SP002</option>
+                    <option value="sp003">SP003</option>
+                </select>
+
+                <div class="seller-modal__actions">
+                    <button type="button" class="btn" id="cancelPromoBtn">Hủy</button>
+                    <button type="submit" class="btn btn--primary">Tạo khuyến mãi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .seller-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .seller-tab {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .seller-tab--active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .seller-tab-content {
+            display: none;
+        }
+
+        .seller-tab-content--active {
+            display: block;
+        }
+
+        .seller-promotions {
+            display: grid;
+            gap: 16px;
+        }
+
+        .seller-promotion-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .seller-promotion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .seller-promotion-header h3 {
+            margin: 0;
+            font-size: 1.6rem;
+        }
+
+        .seller-promotion-status {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 1.2rem;
+        }
+
+        .seller-promotion-status--active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .seller-promotion-status--pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .seller-promotion-body {
+            margin-bottom: 16px;
+        }
+
+        .seller-promotion-body p {
+            margin: 8px 0;
+            font-size: 1.4rem;
+        }
+
+        .seller-promotion-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .seller-reports {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .seller-report-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .seller-report-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .seller-report-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.4rem;
+            color: #fff;
+        }
+
+        .seller-report-icon--sales {
+            background: #28a745;
+        }
+
+        .seller-report-icon--orders {
+            background: #007bff;
+        }
+
+        .seller-report-icon--products {
+            background: #ffc107;
+        }
+
+        .seller-report-icon--views {
+            background: #17a2b8;
+        }
+
+        .seller-report-info h3 {
+            margin: 0 0 8px;
+            font-size: 1.4rem;
+        }
+
+        .seller-report-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 0 0 4px;
+        }
+
+        .seller-report-change {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .seller-report-change--positive {
+            color: #28a745;
+        }
+
+        .seller-report-chart {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .seller-report-chart h2 {
+            margin: 0 0 16px;
+        }
+
+        .seller-chart-placeholder {
+            background: #f5f5f5;
+            border-radius: 4px;
+            padding: 16px;
+            text-align: center;
+            color: #888;
+        }
+
+        .seller-report-table {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .seller-report-table h2 {
+            margin: 0 0 16px;
+        }
+
+        .seller-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .seller-table th,
+        .seller-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .seller-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .seller-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .seller-progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+        }
+    </style>
+
+    <script>
+        // Load seller info
+        const sellerData = sessionStorage.getItem('shopeeSeller');
+        if (sellerData) {
+            const seller = JSON.parse(sellerData);
+            document.getElementById('sellerName').textContent = seller.name || 'Người bán';
+        } else {
+            window.location.href = './seller-login.html';
+        }
+
+        // Tab switching
+        document.querySelectorAll('.seller-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const targetTab = this.dataset.tab;
+                
+                // Update tab buttons
+                document.querySelectorAll('.seller-tab').forEach(t => t.classList.remove('seller-tab--active'));
+                this.classList.add('seller-tab--active');
+                
+                // Update tab content
+                document.querySelectorAll('.seller-tab-content').forEach(c => {
+                    c.classList.remove('seller-tab-content--active');
+                });
+                document.getElementById(targetTab + 'Tab').classList.add('seller-tab-content--active');
+            });
+        });
+
+        // Promotion modal
+        const addPromotionBtn = document.getElementById('addPromotionBtn');
+        const addPromotionModal = document.getElementById('addPromotionModal');
+        const closePromoModal = document.getElementById('closePromoModal');
+        const cancelPromoBtn = document.getElementById('cancelPromoBtn');
+        const promotionForm = document.getElementById('promotionForm');
+
+        addPromotionBtn.addEventListener('click', () => {
+            addPromotionModal.style.display = 'flex';
+        });
+
+        closePromoModal.addEventListener('click', () => {
+            addPromotionModal.style.display = 'none';
+        });
+
+        cancelPromoBtn.addEventListener('click', () => {
+            addPromotionModal.style.display = 'none';
+        });
+
+        promotionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Khuyến mãi đã được tạo (demo)');
+            addPromotionModal.style.display = 'none';
+            promotionForm.reset();
+        });
+
+        // Delete promotion
+        document.querySelectorAll('[data-action="delete-promo"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (confirm('Bạn có chắc muốn xóa khuyến mãi này?')) {
+                    this.closest('.seller-promotion-card').remove();
+                }
+            });
+        });
+
+        // Simple chart placeholder
+        const canvas = document.getElementById('revenueChart');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ddd';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Biểu đồ doanh thu (Demo)', canvas.width / 2, canvas.height / 2);
+        }
+    </script>
+</body>
+</html>
+

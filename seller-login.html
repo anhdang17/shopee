@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập Người bán | Shopee Clone</title>
+    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/grid.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/responsive.css">
+    <link rel="stylesheet" href="./assets/css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <a href="./index.html" class="auth-logo">
+            <img src="./assets/img/logo/shopee-logo.png" alt="Shopee logo">
+        </a>
+        <div class="auth-card">
+            <h1 class="auth-title">Đăng nhập Người bán</h1>
+            <form class="auth-form" id="sellerLoginForm">
+                <label class="auth-label" for="seller-email">Email / Số điện thoại</label>
+                <input type="text" name="email" id="seller-email" class="auth-input" placeholder="email@domain.com hoặc 0123456789">
+
+                <label class="auth-label" for="seller-password">Mật khẩu</label>
+                <input type="password" name="password" id="seller-password" class="auth-input" placeholder="••••••••">
+
+                <div class="auth-options">
+                    <label class="auth-checkbox">
+                        <input type="checkbox" name="remember">
+                        <span>Ghi nhớ đăng nhập</span>
+                    </label>
+                    <a href="#" class="auth-forgot">Quên mật khẩu?</a>
+                </div>
+
+                <button type="submit" class="btn btn--primary auth-submit">Đăng nhập</button>
+            </form>
+            <div class="auth-divider">
+                <span>Hoặc</span>
+            </div>
+            <div class="auth-social">
+                <button class="auth-social-btn">
+                    <i class="fab fa-facebook"></i>
+                    Facebook
+                </button>
+                <button class="auth-social-btn">
+                    <i class="fab fa-google"></i>
+                    Google
+                </button>
+            </div>
+            <p class="auth-switch">
+                Chưa có tài khoản người bán?
+                <a href="./seller-products.html">Đăng ký ngay</a>
+            </p>
+            <p class="auth-switch">
+                <a href="./index.html">← Quay lại trang chủ</a>
+            </p>
+        </div>
+    </div>
+
+    <style>
+        .auth-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .auth-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        .auth-checkbox input {
+            width: 16px;
+            height: 16px;
+        }
+
+        .auth-forgot {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 1.4rem;
+        }
+
+        .auth-forgot:hover {
+            text-decoration: underline;
+        }
+
+        .auth-divider {
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .auth-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .auth-divider span {
+            background: #fff;
+            padding: 0 16px;
+            position: relative;
+            color: #888;
+        }
+
+        .auth-social {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .auth-social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1.4rem;
+        }
+
+        .auth-social-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .auth-social-btn i {
+            font-size: 1.6rem;
+        }
+    </style>
+
+    <script>
+        const form = document.getElementById('sellerLoginForm');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const data = new FormData(form);
+            
+            // Store seller session
+            const seller = {
+                email: data.get('email') || 'seller@example.com',
+                name: 'Người bán Shopee',
+                shopName: 'Shop ABC',
+                loginTime: new Date().toISOString()
+            };
+            
+            sessionStorage.setItem('shopeeSeller', JSON.stringify(seller));
+            window.location.href = './seller-products.html';
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng | Shopee Clone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/grid.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/responsive.css">
+    <link rel="stylesheet" href="./assets/css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="cart-header">
+        <div class="grid wide">
+            <div class="cart-header__content">
+                <a href="./index.html" class="cart-header__logo">
+                    <img src="./assets/img/logo/shopee-logo.png" alt="Shopee logo">
+                </a>
+                <h1 class="cart-header__title">Giỏ hàng của tôi</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="cart-main">
+        <div class="grid wide">
+            <div class="cart-container">
+                <div class="cart-content">
+                    <div class="cart-items" id="cartItems">
+                        <!-- Cart items will be rendered here -->
+                        <div class="cart-item">
+                            <input type="checkbox" class="cart-item-checkbox" checked>
+                            <img src="./assets/img/buy/1.PNG" alt="Product" class="cart-item-img">
+                            <div class="cart-item-info">
+                                <h3 class="cart-item-name">Thanh Thanh 2000 1m57 46kg 88-62-89</h3>
+                                <p class="cart-item-seller">Người bán: Shop ABC</p>
+                                <div class="cart-item-actions">
+                                    <button class="cart-item-btn-remove">Xóa</button>
+                                    <span class="cart-item-separator">|</span>
+                                    <button class="cart-item-btn-save">Lưu vào mục yêu thích</button>
+                                </div>
+                            </div>
+                            <div class="cart-item-price-section">
+                                <div class="cart-item-price">2.000.000đ</div>
+                                <div class="cart-item-quantity">
+                                    <button class="cart-qty-btn" data-action="decrease">-</button>
+                                    <input type="number" class="cart-qty-input" value="2" min="1">
+                                    <button class="cart-qty-btn" data-action="increase">+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cart-item">
+                            <input type="checkbox" class="cart-item-checkbox" checked>
+                            <img src="./assets/img/buy/2.PNG" alt="Product" class="cart-item-img">
+                            <div class="cart-item-info">
+                                <h3 class="cart-item-name">Hồng Ánh 1998 1m62 48kg 89-64-91</h3>
+                                <p class="cart-item-seller">Người bán: Shop XYZ</p>
+                                <div class="cart-item-actions">
+                                    <button class="cart-item-btn-remove">Xóa</button>
+                                    <span class="cart-item-separator">|</span>
+                                    <button class="cart-item-btn-save">Lưu vào mục yêu thích</button>
+                                </div>
+                            </div>
+                            <div class="cart-item-price-section">
+                                <div class="cart-item-price">2.500.000đ</div>
+                                <div class="cart-item-quantity">
+                                    <button class="cart-qty-btn" data-action="decrease">-</button>
+                                    <input type="number" class="cart-qty-input" value="1" min="1">
+                                    <button class="cart-qty-btn" data-action="increase">+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cart-item">
+                            <input type="checkbox" class="cart-item-checkbox" checked>
+                            <img src="./assets/img/buy/3.PNG" alt="Product" class="cart-item-img">
+                            <div class="cart-item-info">
+                                <h3 class="cart-item-name">Quỳnh Như 1999 1m65 49kg 90-62-89</h3>
+                                <p class="cart-item-seller">Người bán: Shop DEF</p>
+                                <div class="cart-item-actions">
+                                    <button class="cart-item-btn-remove">Xóa</button>
+                                    <span class="cart-item-separator">|</span>
+                                    <button class="cart-item-btn-save">Lưu vào mục yêu thích</button>
+                                </div>
+                            </div>
+                            <div class="cart-item-price-section">
+                                <div class="cart-item-price">2.800.000đ</div>
+                                <div class="cart-item-quantity">
+                                    <button class="cart-qty-btn" data-action="decrease">-</button>
+                                    <input type="number" class="cart-qty-input" value="1" min="1">
+                                    <button class="cart-qty-btn" data-action="increase">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cart-empty" id="cartEmpty" style="display: none;">
+                        <img src="./assets/img/sp/no-cart.png" alt="Empty cart" class="cart-empty-img">
+                        <p class="cart-empty-text">Giỏ hàng của bạn trống</p>
+                        <a href="./index.html" class="btn btn--primary">Mua ngay</a>
+                    </div>
+                </div>
+
+                <div class="cart-summary">
+                    <div class="cart-summary-header">
+                        <h3>Tóm tắt đơn hàng</h3>
+                    </div>
+                    <div class="cart-summary-content">
+                        <div class="cart-summary-row">
+                            <span>Tạm tính</span>
+                            <span id="cartSubtotal">7.300.000đ</span>
+                        </div>
+                        <div class="cart-summary-row">
+                            <span>Phí vận chuyển</span>
+                            <span>Miễn phí</span>
+                        </div>
+                        <div class="cart-summary-divider"></div>
+                        <div class="cart-summary-row cart-summary-total">
+                            <span>Tổng cộng</span>
+                            <span id="cartTotal">7.300.000đ</span>
+                        </div>
+                    </div>
+                    <button class="btn btn--primary cart-checkout-btn" id="checkoutBtn">Mua hàng</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .cart-header {
+            background: linear-gradient(var(--main-color1), var(--main-color2));
+            padding: 16px 0;
+        }
+
+        .cart-header__content {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .cart-header__logo img {
+            width: 120px;
+            height: auto;
+        }
+
+        .cart-header__title {
+            color: var(--white-color);
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .cart-main {
+            background: #f5f5f5;
+            min-height: calc(100vh - 80px);
+            padding: 32px 0;
+        }
+
+        .cart-container {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+        }
+
+        .cart-content {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            align-items: flex-start;
+        }
+
+        .cart-item-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-top: 8px;
+        }
+
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-size: 1.4rem;
+            color: var(--text-color);
+            margin: 0 0 8px;
+        }
+
+        .cart-item-seller {
+            font-size: 1.2rem;
+            color: #888;
+            margin: 0 0 12px;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .cart-item-btn-remove,
+        .cart-item-btn-save {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .cart-item-btn-remove:hover,
+        .cart-item-btn-save:hover {
+            color: var(--primary-color);
+        }
+
+        .cart-item-separator {
+            color: #ddd;
+        }
+
+        .cart-item-price-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 16px;
+        }
+
+        .cart-item-price {
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .cart-qty-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #fff;
+            cursor: pointer;
+            font-size: 1.6rem;
+        }
+
+        .cart-qty-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .cart-qty-input {
+            width: 50px;
+            height: 32px;
+            border: none;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 64px 24px;
+        }
+
+        .cart-empty-img {
+            width: 200px;
+            margin-bottom: 24px;
+        }
+
+        .cart-empty-text {
+            font-size: 1.6rem;
+            color: var(--text-color);
+            margin-bottom: 24px;
+        }
+
+        .cart-summary {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            height: fit-content;
+            position: sticky;
+            top: 24px;
+        }
+
+        .cart-summary-header h3 {
+            font-size: 1.8rem;
+            margin: 0 0 16px;
+            color: var(--text-color);
+        }
+
+        .cart-summary-content {
+            margin-bottom: 24px;
+        }
+
+        .cart-summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1.4rem;
+        }
+
+        .cart-summary-total {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .cart-summary-divider {
+            height: 1px;
+            background: #eee;
+            margin: 16px 0;
+        }
+
+        .cart-checkout-btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.6rem;
+        }
+
+        @media (max-width: 768px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-summary {
+                position: static;
+            }
+        }
+    </style>
+
+    <script>
+        // Quantity controls
+        document.querySelectorAll('.cart-qty-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('.cart-qty-input');
+                const action = this.dataset.action;
+                let value = parseInt(input.value);
+                
+                if (action === 'increase') {
+                    value++;
+                } else if (action === 'decrease' && value > 1) {
+                    value--;
+                }
+                
+                input.value = value;
+                updateTotal();
+            });
+        });
+
+        // Remove item
+        document.querySelectorAll('.cart-item-btn-remove').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
+                    this.closest('.cart-item').remove();
+                    updateCartState();
+                    updateTotal();
+                }
+            });
+        });
+
+        function updateTotal() {
+            // Simple calculation - can be enhanced
+            const items = document.querySelectorAll('.cart-item');
+            let total = 0;
+            items.forEach(item => {
+                if (item.querySelector('.cart-item-checkbox').checked) {
+                    const priceText = item.querySelector('.cart-item-price').textContent;
+                    const price = parseInt(priceText.replace(/[^\d]/g, ''));
+                    const qty = parseInt(item.querySelector('.cart-qty-input').value);
+                    total += price * qty;
+                }
+            });
+            
+            const formattedTotal = total.toLocaleString('vi-VN') + 'đ';
+            document.getElementById('cartTotal').textContent = formattedTotal;
+            document.getElementById('cartSubtotal').textContent = formattedTotal;
+        }
+
+        function updateCartState() {
+            const items = document.querySelectorAll('.cart-item');
+            const cartItems = document.getElementById('cartItems');
+            const cartEmpty = document.getElementById('cartEmpty');
+            
+            if (items.length === 0) {
+                cartItems.style.display = 'none';
+                cartEmpty.style.display = 'block';
+            } else {
+                cartItems.style.display = 'flex';
+                cartEmpty.style.display = 'none';
+            }
+        }
+
+        // Checkout button
+        document.getElementById('checkoutBtn').addEventListener('click', function() {
+            const checkedItems = document.querySelectorAll('.cart-item-checkbox:checked');
+            if (checkedItems.length === 0) {
+                alert('Vui lòng chọn ít nhất một sản phẩm');
+                return;
+            }
+            alert('Chức năng thanh toán đang được phát triển');
+        });
+
+        // Update total when checkbox changes
+        document.querySelectorAll('.cart-item-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', updateTotal);
+        });
+    </script>
+</body>
+</html>
+
