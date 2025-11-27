@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký | Shopee Clone</title>
+    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/grid.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/responsive.css">
+    <link rel="stylesheet" href="./assets/css/auth.css">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <a href="./index.html" class="auth-logo">
+            <img src="./assets/img/logo/shopee-logo.png" alt="Shopee logo">
+        </a>
+        <div class="auth-card">
+            <h1 class="auth-title">Đăng ký tài khoản</h1>
+            <form class="auth-form" id="signupForm">
+                <label class="auth-label" for="signup-name">Họ và tên</label>
+                <input type="text" name="name" id="signup-name" class="auth-input" placeholder="Nguyễn Văn A">
+
+                <label class="auth-label" for="signup-email">Email</label>
+                <input type="email" name="email" id="signup-email" class="auth-input" placeholder="email@domain.com">
+
+                <label class="auth-label" for="signup-phone">Số điện thoại</label>
+                <input type="tel" name="phone" id="signup-phone" class="auth-input" placeholder="0123 456 789">
+
+                <label class="auth-label" for="signup-address">Địa chỉ</label>
+                <input type="text" name="address" id="signup-address" class="auth-input" placeholder="Số nhà, Quận/Huyện, Tỉnh/TP">
+
+                <label class="auth-label" for="signup-password">Mật khẩu</label>
+                <input type="password" name="password" id="signup-password" class="auth-input" placeholder="••••••••">
+
+                <button type="submit" class="btn btn--primary auth-submit">Đăng ký</button>
+            </form>
+            <p class="auth-switch">
+                Đã có tài khoản?
+                <a href="./signin.html">Đăng nhập</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const signupForm = document.getElementById('signupForm');
+        signupForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const data = new FormData(signupForm);
+
+            const user = {
+                name: data.get('name') || 'Người dùng Shopee',
+                email: data.get('email') || 'user@example.com',
+                phone: data.get('phone') || 'Chưa cập nhật',
+                address: data.get('address') || 'Đang cập nhật',
+                memberSince: new Date().getFullYear()
+            };
+
+            sessionStorage.setItem('shopeeUser', JSON.stringify(user));
+            window.location.href = './profile.html';
+        });
+    </script>
+</body>
+</html>
+

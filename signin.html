@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập | Shopee Clone</title>
+    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/grid.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/responsive.css">
+    <link rel="stylesheet" href="./assets/css/auth.css">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <a href="./index.html" class="auth-logo">
+            <img src="./assets/img/logo/shopee-logo.png" alt="Shopee logo">
+        </a>
+        <div class="auth-card">
+            <h1 class="auth-title">Đăng nhập</h1>
+            <form class="auth-form" id="signinForm">
+                <label class="auth-label" for="signin-email">Email</label>
+                <input type="email" name="email" id="signin-email" class="auth-input" placeholder="email@domain.com">
+
+                <label class="auth-label" for="signin-password">Mật khẩu</label>
+                <input type="password" name="password" id="signin-password" class="auth-input" placeholder="••••••••">
+
+                <button type="submit" class="btn btn--primary auth-submit">Đăng nhập</button>
+            </form>
+            <p class="auth-switch">
+                Chưa có tài khoản?
+                <a href="./signup.html">Đăng ký ngay</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('signinForm');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const data = new FormData(form);
+            const storedUser = sessionStorage.getItem('shopeeUser');
+            const parsedUser = storedUser ? JSON.parse(storedUser) : {};
+
+            const user = {
+                name: parsedUser.name || 'Người dùng Shopee',
+                email: data.get('email') || parsedUser.email || 'user@example.com',
+                phone: parsedUser.phone || 'Chưa cập nhật',
+                address: parsedUser.address || 'Đang cập nhật',
+                memberSince: parsedUser.memberSince || new Date().getFullYear()
+            };
+
+            sessionStorage.setItem('shopeeUser', JSON.stringify(user));
+            window.location.href = './profile.html';
+        });
+    </script>
+</body>
+</html>
+

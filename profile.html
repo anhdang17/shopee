@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ | Shopee Clone</title>
+    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/grid.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/responsive.css">
+    <link rel="stylesheet" href="./assets/css/auth.css">
+</head>
+<body class="profile-page">
+    <header class="profile-shell">
+        <a href="./index.html" class="auth-logo">
+            <img src="./assets/img/logo/shopee-logo.png" alt="Shopee logo">
+        </a>
+    </header>
+    <main class="profile-shell">
+        <section class="profile-card" id="profileCard">
+            <div class="profile-header">
+                <img src="./assets/img/user.png" alt="Avatar">
+                <div>
+                    <h1 class="profile-name" data-profile-name>Người dùng Shopee</h1>
+                    <p class="profile-meta" data-profile-meta>Thành viên từ 2025</p>
+                </div>
+            </div>
+            <div class="profile-grid">
+                <div class="profile-field">
+                    <span>Email</span>
+                    <strong data-profile-email>user@example.com</strong>
+                </div>
+                <div class="profile-field">
+                    <span>Số điện thoại</span>
+                    <strong data-profile-phone>Chưa cập nhật</strong>
+                </div>
+                <div class="profile-field">
+                    <span>Địa chỉ</span>
+                    <strong data-profile-address>Đang cập nhật</strong>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <button class="profile-action secondary" id="editProfileBtn">Sửa nhanh</button>
+                <button class="profile-action" id="logoutBtn">Đăng xuất</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const profileName = document.querySelector('[data-profile-name]');
+        const profileMeta = document.querySelector('[data-profile-meta]');
+        const profileEmail = document.querySelector('[data-profile-email]');
+        const profilePhone = document.querySelector('[data-profile-phone]');
+        const profileAddress = document.querySelector('[data-profile-address]');
+        const editBtn = document.getElementById('editProfileBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        function renderProfile() {
+            const stored = sessionStorage.getItem('shopeeUser');
+            if (!stored) {
+                return;
+            }
+            const user = JSON.parse(stored);
+            profileName.textContent = user.name || 'Người dùng Shopee';
+            profileMeta.textContent = `Thành viên từ ${user.memberSince || new Date().getFullYear()}`;
+            profileEmail.textContent = user.email || 'user@example.com';
+            profilePhone.textContent = user.phone || 'Chưa cập nhật';
+            profileAddress.textContent = user.address || 'Đang cập nhật';
+        }
+
+        editBtn.addEventListener('click', () => {
+            window.location.href = './signup.html';
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('shopeeUser');
+            window.location.href = './signin.html';
+        });
+
+        renderProfile();
+    </script>
+</body>
+</html>
+
