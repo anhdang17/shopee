@@ -1388,3 +1388,232 @@ border-color: red green blue yellow */
 .other-footer-more {
     margin: 8px 10px 0;
 }
+
+/* Promotions Section */
+.promotions-section {
+    background: var(--white-color);
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.promotions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.promotions-title {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.promotions-title i {
+    color: #ff6b00;
+}
+
+.promotions-view-all {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.promotions-view-all:hover {
+    opacity: 0.8;
+}
+
+.promotions-banner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.promotion-card {
+    background: linear-gradient(135deg, #ff6b00 0%, #ee4d2d 100%);
+    border-radius: 8px;
+    padding: 20px;
+    color: var(--white-color);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.promotion-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(238, 77, 45, 0.3);
+}
+
+.promotion-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
+
+.promotion-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin: 0 0 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.promotion-desc {
+    font-size: 1.3rem;
+    margin: 0 0 12px;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+}
+
+.promotion-discount {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.promotion-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255,255,255,0.2);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Seller Section */
+.seller-section {
+    background: var(--white-color);
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.seller-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.seller-section-title {
+    font-size: 1.8rem;
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.seller-section-title i {
+    color: var(--primary-color);
+}
+
+.seller-view-all {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.seller-view-all:hover {
+    opacity: 0.8;
+}
+
+.seller-products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.seller-product-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.seller-product-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(238, 77, 45, 0.15);
+    transform: translateY(-2px);
+}
+
+.seller-shop-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    border: 2px solid var(--primary-color);
+    object-fit: cover;
+}
+
+.seller-shop-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 8px;
+}
+
+.seller-shop-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.seller-shop-rating i {
+    color: #ffe400;
+    font-size: 1.2rem;
+}
+
+.seller-shop-stats {
+    font-size: 1.2rem;
+    color: #888;
+    margin: 0;
+}
+
+.seller-shop-badge {
+    display: inline-block;
+    background: var(--primary-color);
+    color: var(--white-color);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+    .promotions-banner {
+        grid-template-columns: 1fr;
+    }
+    
+    .seller-products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}

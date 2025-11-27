@@ -1,5 +1,141 @@
 const dataUrl = './assets/db/shopee.json'
 
+// Virtual data for promotions (no database needed)
+const virtualPromotions = [
+    {
+        id: 1,
+        title: 'Giảm giá 50%',
+        desc: 'Áp dụng cho tất cả sản phẩm',
+        discount: '50%',
+        badge: 'Hot',
+        color: 'linear-gradient(135deg, #ff6b00 0%, #ee4d2d 100%)'
+    },
+    {
+        id: 2,
+        title: 'Mua 2 Tặng 1',
+        desc: 'Chương trình đặc biệt hôm nay',
+        discount: 'Mua 2 Tặng 1',
+        badge: 'New',
+        color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    },
+    {
+        id: 3,
+        title: 'Freeship Toàn Quốc',
+        desc: 'Miễn phí vận chuyển cho đơn từ 100k',
+        discount: 'Freeship',
+        badge: 'Free',
+        color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    },
+    {
+        id: 4,
+        title: 'Flash Sale',
+        desc: 'Giảm sốc đến 70%',
+        discount: '70%',
+        badge: 'Flash',
+        color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+    }
+];
+
+// Virtual data for sellers (no database needed)
+const virtualSellers = [
+    {
+        id: 1,
+        name: 'Shop Tech Pro',
+        avatar: './assets/img/user.png',
+        rating: 5,
+        products: '1.2k',
+        badge: 'Mall'
+    },
+    {
+        id: 2,
+        name: 'Gaming Store',
+        avatar: './assets/img/user.png',
+        rating: 5,
+        products: '856',
+        badge: 'Yêu thích'
+    },
+    {
+        id: 3,
+        name: 'Electronics Hub',
+        avatar: './assets/img/user.png',
+        rating: 4,
+        products: '2.1k',
+        badge: 'Mall'
+    },
+    {
+        id: 4,
+        name: 'Computer World',
+        avatar: './assets/img/user.png',
+        rating: 5,
+        products: '945',
+        badge: 'Yêu thích'
+    },
+    {
+        id: 5,
+        name: 'Tech Solutions',
+        avatar: './assets/img/user.png',
+        rating: 4,
+        products: '1.5k',
+        badge: 'Mall'
+    },
+    {
+        id: 6,
+        name: 'Digital Store',
+        avatar: './assets/img/user.png',
+        rating: 5,
+        products: '678',
+        badge: 'Yêu thích'
+    }
+];
+
+// Render promotions
+function renderPromotions() {
+    const promotionsBanner = document.getElementById('promotionsBanner');
+    if (!promotionsBanner) return;
+    
+    const htmls = virtualPromotions.map(function(promo) {
+        return `
+            <div class="promotion-card" style="background: ${promo.color};">
+                <div class="promotion-badge">${promo.badge}</div>
+                <h3 class="promotion-title">${promo.title}</h3>
+                <p class="promotion-desc">${promo.desc}</p>
+                <p class="promotion-discount">${promo.discount}</p>
+            </div>
+        `;
+    });
+    
+    promotionsBanner.innerHTML = htmls.join('');
+}
+
+// Render seller products
+function renderSellerProducts() {
+    const sellerProductsGrid = document.getElementById('sellerProductsGrid');
+    if (!sellerProductsGrid) return;
+    
+    const htmls = virtualSellers.map(function(seller) {
+        const stars = Array(seller.rating).fill('<i class="fas fa-star"></i>').join('');
+        return `
+            <div class="seller-product-card" onclick="window.location.href='./seller-products.html'">
+                <img src="${seller.avatar}" alt="${seller.name}" class="seller-shop-avatar">
+                <h3 class="seller-shop-name">${seller.name}</h3>
+                <div class="seller-shop-rating">
+                    ${stars}
+                </div>
+                <p class="seller-shop-stats">${seller.products} sản phẩm</p>
+                <span class="seller-shop-badge">${seller.badge}</span>
+            </div>
+        `;
+    });
+    
+    sellerProductsGrid.innerHTML = htmls.join('');
+}
+
+// Initialize promotions and sellers on page load
+document.addEventListener('DOMContentLoaded', function() {
+    renderPromotions();
+    renderSellerProducts();
+});
+
 fetch(dataUrl)
     .then(response => response.json())
     .then(renderItem)
