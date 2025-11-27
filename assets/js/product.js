@@ -308,6 +308,14 @@ homeFilterPage[1].onclick = function(){
     var switchButtons = modal.querySelectorAll('[data-switch-target]');
     var backButtons = modal.querySelectorAll('.auth-form__back');
     var formRegistry = {};
+    var currentUser = null;
+    var registerTrigger = document.querySelector('[data-auth-target="register"]');
+    var loginTrigger = document.querySelector('[data-auth-target="login"]');
+    var registerItem = registerTrigger ? registerTrigger.closest('.header__nav-item') : null;
+    var loginItem = loginTrigger ? loginTrigger.closest('.header__nav-item') : null;
+    var userItem = document.querySelector('[data-auth-user]');
+    var userNameLabel = userItem ? userItem.querySelector('[data-user-name]') : null;
+    var logoutAction = userItem ? userItem.querySelector('[data-user-logout]') : null;
 
     authForms.forEach(function (form) {
         var key = form.getAttribute('data-auth-form');
@@ -320,6 +328,17 @@ homeFilterPage[1].onclick = function(){
         register: ['0987654321', 'Demo@1234', 'Demo@1234'],
         login: ['0987654321', 'Demo@1234']
     };
+
+    bindAuthActions('register');
+    bindAuthActions('login');
+    if (logoutAction) {
+        logoutAction.addEventListener('click', function (event) {
+            event.preventDefault();
+            currentUser = null;
+            updateUserNavigation();
+        });
+    }
+    updateUserNavigation();
 
     function openAuth(target) {
         var type = formRegistry[target] ? target : 'login';
@@ -345,6 +364,70 @@ homeFilterPage[1].onclick = function(){
         inputs.forEach(function (input, index) {
             input.value = values[index] || '';
         });
+    }
+
+    function bindAuthActions(type) {
+        var form = formRegistry[type];
+        if (!form) {
+            return;
+        }
+        var primaryBtn = form.querySelector('.auth-form__control .btn.btn--primary');
+        if (primaryBtn) {
+            primaryBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                handleAuthSubmit(type);
+            });
+        }
+        form.addEventListener('keyup', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleAuthSubmit(type);
+            }
+        });
+    }
+
+    function handleAuthSubmit(type) {
+        var form = formRegistry[type];
+        if (!form) {
+            return;
+        }
+        var inputs = form.querySelectorAll('.auth-form__input');
+        var identity = inputs[0] ? inputs[0].value.trim() : '';
+        var fallback = type === 'register' ? 'Khách mới Shopee' : 'Người dùng Shopee';
+        currentUser = {
+            name: identity || fallback,
+            phone: identity || mockProfiles.login[0],
+            type: type
+        };
+        updateUserNavigation();
+        closeAuth();
+    }
+
+    function updateUserNavigation() {
+        if (currentUser) {
+            if (userItem) {
+                userItem.classList.add('is-active');
+            }
+            if (userNameLabel) {
+                userNameLabel.textContent = currentUser.name;
+            }
+            if (registerItem) {
+                registerItem.classList.add('header__nav-item--hidden');
+            }
+            if (loginItem) {
+                loginItem.classList.add('header__nav-item--hidden');
+            }
+        } else {
+            if (userItem) {
+                userItem.classList.remove('is-active');
+            }
+            if (registerItem) {
+                registerItem.classList.remove('header__nav-item--hidden');
+            }
+            if (loginItem) {
+                loginItem.classList.remove('header__nav-item--hidden');
+            }
+        }
     }
 
     triggers.forEach(function (btn) {

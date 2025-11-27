@@ -49,6 +49,15 @@
 
 .header__nav-user {
     position: relative;
+    display: none;
+}
+
+.header__nav-user.is-active {
+    display: flex;
+}
+
+.header__nav-item--hidden {
+    display: none !important;
 }
 
 /* cầu nối liền mạch */
