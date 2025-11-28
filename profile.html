@@ -39,41 +39,223 @@
                     <strong data-profile-address>Đang cập nhật</strong>
                 </div>
             </div>
-            <div class="profile-actions">
-                <button class="profile-action secondary" id="editProfileBtn">Sửa nhanh</button>
-                <button class="profile-action" id="logoutBtn">Đăng xuất</button>
-            </div>
+            <div class="profile-alert" id="profileMessage" role="alert" aria-live="polite"></div>
+            <form class="profile-form" id="profileForm">
+                <div class="profile-form-grid">
+                    <div class="profile-form-group">
+                        <label for="profile-name-input">Họ và tên</label>
+                        <input type="text" class="profile-input" id="profile-name-input" name="name" placeholder="Nguyễn Văn A">
+                    </div>
+                    <div class="profile-form-group">
+                        <label for="profile-email-input">Email</label>
+                        <input type="email" class="profile-input" id="profile-email-input" name="email" placeholder="email@domain.com">
+                    </div>
+                    <div class="profile-form-group">
+                        <label for="profile-phone-input">Số điện thoại</label>
+                        <input type="tel" class="profile-input" id="profile-phone-input" name="phone" placeholder="0123 456 789">
+                    </div>
+                    <div class="profile-form-group">
+                        <label for="profile-address-input">Địa chỉ</label>
+                        <input type="text" class="profile-input" id="profile-address-input" name="address" placeholder="Số nhà, Quận/Huyện, Tỉnh/TP">
+                    </div>
+                </div>
+
+                <div class="profile-subsection">
+                    <h2>Địa chỉ giao hàng mặc định</h2>
+                    <p>Thông tin này sẽ được dùng sẵn trong bước thanh toán.</p>
+                    <div class="profile-form-grid">
+                        <div class="profile-form-group">
+                            <label for="shipping-recipient">Tên người nhận</label>
+                            <input type="text" class="profile-input" id="shipping-recipient" name="recipientName" placeholder="Nguyễn Văn B">
+                        </div>
+                        <div class="profile-form-group">
+                            <label for="shipping-phone">Số điện thoại</label>
+                            <input type="tel" class="profile-input" id="shipping-phone" name="recipientPhone" placeholder="0987 654 321">
+                        </div>
+                        <div class="profile-form-group">
+                            <label for="shipping-address">Địa chỉ chi tiết</label>
+                            <input type="text" class="profile-input" id="shipping-address" name="addressLine" placeholder="123 Trần Hưng Đạo">
+                        </div>
+                        <div class="profile-form-group">
+                            <label for="shipping-city">Tỉnh / Thành phố</label>
+                            <input type="text" class="profile-input" id="shipping-city" name="city" placeholder="Hà Nội">
+                        </div>
+                        <div class="profile-form-group">
+                            <label for="shipping-note">Ghi chú giao hàng</label>
+                            <input type="text" class="profile-input" id="shipping-note" name="note" placeholder="Ví dụ: gọi trước khi giao">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-subsection">
+                    <h2>Tùy chọn thanh toán</h2>
+                    <div class="profile-radio-group">
+                        <label class="profile-radio">
+                            <input type="radio" name="paymentPreference" value="cod" checked> Thanh toán khi nhận hàng (COD)
+                        </label>
+                        <label class="profile-radio">
+                            <input type="radio" name="paymentPreference" value="card"> Thẻ ngân hàng / Visa / MasterCard
+                        </label>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <button type="button" class="profile-action secondary" id="cancelProfileBtn">Huỷ</button>
+                    <button type="submit" class="profile-action" id="saveProfileBtn">Lưu thay đổi</button>
+                    <button type="button" class="profile-action" id="logoutBtn">Đăng xuất</button>
+                </div>
+            </form>
         </section>
     </main>
 
+    <script src="./assets/js/app.js"></script>
     <script>
-        const profileName = document.querySelector('[data-profile-name]');
+        const profileNameLabel = document.querySelector('[data-profile-name]');
         const profileMeta = document.querySelector('[data-profile-meta]');
-        const profileEmail = document.querySelector('[data-profile-email]');
-        const profilePhone = document.querySelector('[data-profile-phone]');
-        const profileAddress = document.querySelector('[data-profile-address]');
-        const editBtn = document.getElementById('editProfileBtn');
+        const profileEmailLabel = document.querySelector('[data-profile-email]');
+        const profilePhoneLabel = document.querySelector('[data-profile-phone]');
+        const profileAddressLabel = document.querySelector('[data-profile-address]');
+        const profileForm = document.getElementById('profileForm');
         const logoutBtn = document.getElementById('logoutBtn');
+        const cancelBtn = document.getElementById('cancelProfileBtn');
+        const profileMessage = document.getElementById('profileMessage');
 
-        function renderProfile() {
+        const inputMap = {
+            name: document.getElementById('profile-name-input'),
+            email: document.getElementById('profile-email-input'),
+            phone: document.getElementById('profile-phone-input'),
+            address: document.getElementById('profile-address-input'),
+            recipientName: document.getElementById('shipping-recipient'),
+            recipientPhone: document.getElementById('shipping-phone'),
+            addressLine: document.getElementById('shipping-address'),
+            city: document.getElementById('shipping-city'),
+            note: document.getElementById('shipping-note')
+        };
+
+        function getStoredUser() {
             const stored = sessionStorage.getItem('shopeeUser');
             if (!stored) {
-                return;
+                window.location.href = './signin.html';
+                return null;
             }
-            const user = JSON.parse(stored);
-            profileName.textContent = user.name || 'Người dùng Shopee';
-            profileMeta.textContent = `Thành viên từ ${user.memberSince || new Date().getFullYear()}`;
-            profileEmail.textContent = user.email || 'user@example.com';
-            profilePhone.textContent = user.phone || 'Chưa cập nhật';
-            profileAddress.textContent = user.address || 'Đang cập nhật';
+            return JSON.parse(stored);
         }
 
-        editBtn.addEventListener('click', () => {
-            window.location.href = './signup.html';
+        function setMessage(text = '', type = 'info') {
+            if (!profileMessage) return;
+            if (!text) {
+                profileMessage.textContent = '';
+                profileMessage.className = 'profile-alert';
+                return;
+            }
+            profileMessage.textContent = text;
+            profileMessage.className = `profile-alert profile-alert--show auth-alert auth-alert--${type}`;
+        }
+
+        function populateForm(user, checkoutProfile) {
+            inputMap.name.value = user.name || '';
+            inputMap.email.value = user.email || '';
+            inputMap.phone.value = user.phone || '';
+            inputMap.address.value = user.address || '';
+
+            const shipping = checkoutProfile.shippingAddress || {};
+            inputMap.recipientName.value = shipping.recipientName || user.name || '';
+            inputMap.recipientPhone.value = shipping.recipientPhone || user.phone || '';
+            inputMap.addressLine.value = shipping.addressLine || user.address || '';
+            inputMap.city.value = shipping.city || '';
+            inputMap.note.value = shipping.note || '';
+
+            const paymentPreference = checkoutProfile.paymentMethod || user.paymentPreference || 'cod';
+            const paymentInput = profileForm.querySelector(`input[name="paymentPreference"][value="${paymentPreference}"]`);
+            if (paymentInput) {
+                paymentInput.checked = true;
+            }
+        }
+
+        function renderProfileSummary(user) {
+            profileNameLabel.textContent = user.name || 'Người dùng Shopee';
+            profileMeta.textContent = `Thành viên từ ${user.memberSince || new Date().getFullYear()}`;
+            profileEmailLabel.textContent = user.email || 'user@example.com';
+            profilePhoneLabel.textContent = user.phone || 'Chưa cập nhật';
+            profileAddressLabel.textContent = user.address || 'Đang cập nhật';
+        }
+
+        function renderProfile() {
+            const user = getStoredUser();
+            if (!user) return;
+            const checkoutProfile = ShopeeApp.getCheckoutProfile();
+            renderProfileSummary(user);
+            populateForm(user, checkoutProfile);
+        }
+
+        profileForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const user = getStoredUser();
+            if (!user) return;
+            const paymentPreference = profileForm.paymentPreference.value || 'cod';
+
+            const payload = {
+                ...user,
+                name: inputMap.name.value.trim(),
+                email: inputMap.email.value.trim(),
+                phone: inputMap.phone.value.trim(),
+                address: inputMap.address.value.trim(),
+                paymentPreference
+            };
+
+            const errors = [];
+            if (!payload.name) {
+                errors.push('Vui lòng nhập họ tên');
+            }
+            if (!ShopeeApp.validators.email(payload.email)) {
+                errors.push('Email không hợp lệ');
+            }
+            if (!ShopeeApp.validators.phone(payload.phone)) {
+                errors.push('Số điện thoại không hợp lệ');
+            }
+
+            const shippingAddress = {
+                recipientName: inputMap.recipientName.value.trim(),
+                recipientPhone: inputMap.recipientPhone.value.trim(),
+                addressLine: inputMap.addressLine.value.trim(),
+                city: inputMap.city.value.trim(),
+                note: inputMap.note.value.trim()
+            };
+
+            if (!shippingAddress.recipientName) {
+                errors.push('Tên người nhận không được để trống');
+            }
+            if (!ShopeeApp.validators.phone(shippingAddress.recipientPhone)) {
+                errors.push('Số điện thoại người nhận không hợp lệ');
+            }
+            if (!shippingAddress.addressLine) {
+                errors.push('Địa chỉ giao hàng cần được nhập');
+            }
+
+            if (errors.length) {
+                setMessage(errors.join(' • '), 'error');
+                return;
+            }
+
+            payload.memberSince = payload.memberSince || new Date().getFullYear();
+            sessionStorage.setItem('shopeeUser', JSON.stringify(payload));
+            ShopeeApp.upsertUser(payload);
+            ShopeeApp.saveCheckoutProfile({
+                shippingAddress,
+                paymentMethod: paymentPreference
+            });
+            renderProfileSummary(payload);
+            setMessage('Đã lưu thông tin tài khoản!', 'success');
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            setMessage();
+            renderProfile();
         });
 
         logoutBtn.addEventListener('click', () => {
             sessionStorage.removeItem('shopeeUser');
+            ShopeeApp.toast('Bạn đã đăng xuất', 'info');
             window.location.href = './signin.html';
         });
 

@@ -181,6 +181,72 @@ body.auth-page {
     gap: 16px;
 }
 
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.profile-alert {
+    display: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.profile-alert--show {
+    display: block;
+}
+
+.profile-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.profile-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profile-form-group label {
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #888;
+}
+
+.profile-subsection {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.profile-subsection h2 {
+    margin: 0 0 12px;
+    font-size: 18px;
+}
+
+.profile-subsection p {
+    margin: 0 0 12px;
+    color: #666;
+    font-size: 14px;
+}
+
+.profile-radio-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.profile-radio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
 .profile-field {
     display: flex;
     flex-direction: column;

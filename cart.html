@@ -46,6 +46,73 @@
                 </div>
 
                 <div class="cart-summary">
+                    <div class="checkout-section">
+                        <h3>Thông tin giao hàng</h3>
+                        <form id="shippingForm" novalidate>
+                            <div class="checkout-field">
+                                <label for="checkout-recipient">Tên người nhận</label>
+                                <input type="text" id="checkout-recipient" name="recipientName" placeholder="Nguyễn Văn A">
+                            </div>
+                            <div class="checkout-field">
+                                <label for="checkout-phone">Số điện thoại</label>
+                                <input type="tel" id="checkout-phone" name="recipientPhone" placeholder="0987 654 321">
+                            </div>
+                            <div class="checkout-field">
+                                <label for="checkout-address">Địa chỉ cụ thể</label>
+                                <input type="text" id="checkout-address" name="addressLine" placeholder="123 Trần Hưng Đạo, Quận 1">
+                            </div>
+                            <div class="checkout-field">
+                                <label for="checkout-city">Tỉnh / Thành phố</label>
+                                <input type="text" id="checkout-city" name="city" placeholder="Hồ Chí Minh">
+                            </div>
+                            <div class="checkout-field">
+                                <label for="checkout-note">Ghi chú cho shipper</label>
+                                <input type="text" id="checkout-note" name="note" placeholder="Gọi trước khi giao">
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="checkout-section">
+                        <h3>Phương thức vận chuyển</h3>
+                        <label class="checkout-radio">
+                            <input type="radio" name="shippingMethod" value="standard" data-fee="0" checked> Tiêu chuẩn (3-5 ngày) - Miễn phí
+                        </label>
+                        <label class="checkout-radio">
+                            <input type="radio" name="shippingMethod" value="fast" data-fee="15000"> Nhanh (2-3 ngày) - 15.000đ
+                        </label>
+                        <label class="checkout-radio">
+                            <input type="radio" name="shippingMethod" value="express" data-fee="30000"> Hỏa tốc (24h) - 30.000đ
+                        </label>
+                    </div>
+
+                    <div class="checkout-section">
+                        <h3>Thanh toán</h3>
+                        <label class="checkout-radio">
+                            <input type="radio" name="paymentMethod" value="cod" checked> Thanh toán khi nhận hàng (COD)
+                        </label>
+                        <label class="checkout-radio">
+                            <input type="radio" name="paymentMethod" value="card"> Thẻ ngân hàng / Visa / MasterCard
+                        </label>
+                        <div class="payment-card-fields" id="cardFields">
+                            <div class="checkout-field">
+                                <label for="card-name">Tên in trên thẻ</label>
+                                <input type="text" id="card-name" placeholder="NGUYEN VAN A">
+                            </div>
+                            <div class="checkout-field">
+                                <label for="card-number">Số thẻ</label>
+                                <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+                            </div>
+                            <div class="checkout-field">
+                                <label for="card-expiry">Ngày hết hạn (MM/YY)</label>
+                                <input type="text" id="card-expiry" placeholder="08/28" maxlength="5">
+                            </div>
+                            <div class="checkout-field">
+                                <label for="card-cvv">CVV</label>
+                                <input type="password" id="card-cvv" placeholder="***" maxlength="4">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="cart-summary-header">
                         <h3>Tóm tắt đơn hàng</h3>
                     </div>
@@ -60,7 +127,11 @@
                         </div>
                         <div class="cart-summary-row">
                             <span>Phí vận chuyển</span>
-                            <span>Miễn phí</span>
+                            <span id="cartShippingFee">0đ</span>
+                        </div>
+                        <div class="cart-summary-row">
+                            <span>Thanh toán</span>
+                            <span id="cartPaymentLabel">COD</span>
                         </div>
                         <div class="cart-summary-divider"></div>
                         <div class="cart-summary-row cart-summary-total">
@@ -68,7 +139,8 @@
                             <span id="cartTotal">0đ</span>
                         </div>
                     </div>
-                    <button class="btn btn--primary cart-checkout-btn" id="checkoutBtn">Mua hàng</button>
+                    <div class="profile-alert" id="checkoutMessage"></div>
+                    <button class="btn btn--primary cart-checkout-btn" id="checkoutBtn">Đặt hàng</button>
                 </div>
             </div>
         </div>
@@ -281,6 +353,56 @@
             top: 24px;
         }
 
+        .checkout-section {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .checkout-section h3 {
+            margin: 0 0 12px;
+            font-size: 1.6rem;
+        }
+
+        .checkout-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .checkout-field label {
+            font-size: 1.3rem;
+            color: #666;
+        }
+
+        .checkout-field input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1.4rem;
+        }
+
+        .checkout-radio {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 1.3rem;
+        }
+
+        .payment-card-fields {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .payment-card-fields.payment-card-fields--show {
+            display: grid;
+        }
+
         .cart-summary-header h3 {
             font-size: 1.8rem;
             margin: 0 0 16px;
@@ -337,7 +459,26 @@
         const toggleAllCheckbox = document.getElementById('toggleAllCart');
         const clearCartBtn = document.getElementById('clearCartBtn');
         const checkoutBtn = document.getElementById('checkoutBtn');
+        const shippingForm = document.getElementById('shippingForm');
+        const shippingMethodInputs = document.querySelectorAll('input[name="shippingMethod"]');
+        const paymentMethodInputs = document.querySelectorAll('input[name="paymentMethod"]');
+        const cardFieldsWrapper = document.getElementById('cardFields');
+        const cardNameInput = document.getElementById('card-name');
+        const cardNumberInput = document.getElementById('card-number');
+        const cardExpiryInput = document.getElementById('card-expiry');
+        const cardCvvInput = document.getElementById('card-cvv');
+        const shippingFeeEl = document.getElementById('cartShippingFee');
+        const paymentLabelEl = document.getElementById('cartPaymentLabel');
+        const checkoutMessage = document.getElementById('checkoutMessage');
+        const shippingFees = {
+            standard: 0,
+            fast: 15000,
+            express: 30000
+        };
         let selectedIds = new Set();
+        let currentShippingMethod = 'standard';
+        let currentShippingFee = 0;
+        let currentPaymentMethod = 'cod';
 
         function formatPrice(value) {
             return ShopeeApp.formatCurrency(value);
@@ -416,13 +557,28 @@
             updateTotals();
         }
 
+        function setCheckoutMessage(text = '', type = 'info') {
+            if (!checkoutMessage) return;
+            if (!text) {
+                checkoutMessage.textContent = '';
+                checkoutMessage.className = 'profile-alert';
+                return;
+            }
+            checkoutMessage.textContent = text;
+            checkoutMessage.className = `profile-alert profile-alert--show auth-alert auth-alert--${type}`;
+        }
+
         function updateTotals() {
             const items = getCartSnapshot();
             const selectedItems = items.filter(item => selectedIds.has(item.id));
             const subtotal = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const shippingFee = selectedItems.length ? currentShippingFee : 0;
+            const total = subtotal + shippingFee;
             selectionCountEl.textContent = selectedItems.length.toString();
             subtotalEl.textContent = formatPrice(subtotal);
-            totalEl.textContent = formatPrice(subtotal);
+            shippingFeeEl.textContent = formatPrice(shippingFee);
+            totalEl.textContent = formatPrice(total);
+            paymentLabelEl.textContent = currentPaymentMethod === 'card' ? 'Thẻ ngân hàng' : 'COD';
         }
 
         function handleQuantityChange(productId, nextQuantity) {
@@ -513,18 +669,153 @@
             }
         });
 
+        function populateCheckoutForm() {
+            if (!shippingForm) return;
+            const storedUser = sessionStorage.getItem('shopeeUser');
+            const user = storedUser ? JSON.parse(storedUser) : {};
+            const checkoutProfile = ShopeeApp.getCheckoutProfile();
+            currentShippingMethod = checkoutProfile.shippingMethod || 'standard';
+            currentPaymentMethod = checkoutProfile.paymentMethod || 'cod';
+            currentShippingFee = shippingFees[currentShippingMethod] || 0;
+
+            if (shippingMethodInputs.length) {
+                shippingMethodInputs.forEach(input => {
+                    input.checked = input.value === currentShippingMethod;
+                });
+            }
+            if (paymentMethodInputs.length) {
+                paymentMethodInputs.forEach(input => {
+                    input.checked = input.value === currentPaymentMethod;
+                });
+            }
+
+            const shippingAddress = checkoutProfile.shippingAddress || {};
+            shippingForm.recipientName.value = shippingAddress.recipientName || user.name || '';
+            shippingForm.recipientPhone.value = shippingAddress.recipientPhone || user.phone || '';
+            shippingForm.addressLine.value = shippingAddress.addressLine || user.address || '';
+            shippingForm.city.value = shippingAddress.city || '';
+            shippingForm.note.value = shippingAddress.note || '';
+
+            const cardInfo = checkoutProfile.paymentCard || {};
+            cardNameInput.value = cardInfo.cardName || '';
+            cardNumberInput.value = cardInfo.cardNumber || '';
+            cardExpiryInput.value = cardInfo.expiry || '';
+            cardCvvInput.value = cardInfo.cvv || '';
+
+            toggleCardFields();
+        }
+
+        function toggleCardFields() {
+            if (!cardFieldsWrapper) return;
+            if (currentPaymentMethod === 'card') {
+                cardFieldsWrapper.classList.add('payment-card-fields--show');
+            } else {
+                cardFieldsWrapper.classList.remove('payment-card-fields--show');
+            }
+        }
+
+        if (shippingForm) {
+            shippingForm.addEventListener('submit', (event) => event.preventDefault());
+        }
+
+        shippingMethodInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                if (!this.checked) return;
+                currentShippingMethod = this.value;
+                currentShippingFee = shippingFees[currentShippingMethod] || 0;
+                updateTotals();
+            });
+        });
+
+        paymentMethodInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                if (!this.checked) return;
+                currentPaymentMethod = this.value;
+                toggleCardFields();
+                updateTotals();
+            });
+        });
+
+        function validateCardInfo(cardNumber, expiry, cvv) {
+            const errors = [];
+            const number = cardNumber.replace(/\s+/g, '');
+            if (!/^\d{12,19}$/.test(number)) {
+                errors.push('Số thẻ không hợp lệ');
+            }
+            if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) {
+                errors.push('Ngày hết hạn phải theo định dạng MM/YY');
+            }
+            if (!/^\d{3,4}$/.test(cvv)) {
+                errors.push('CVV không hợp lệ');
+            }
+            return errors;
+        }
+
         checkoutBtn.addEventListener('click', () => {
-            const selectedItems = getCartSnapshot().filter(item => selectedIds.has(item.id));
+            setCheckoutMessage();
+            const items = getCartSnapshot();
+            const selectedItems = items.filter(item => selectedIds.has(item.id));
             if (!selectedItems.length) {
-                ShopeeApp.toast('Vui lòng chọn ít nhất một sản phẩm', 'error');
+                setCheckoutMessage('Vui lòng chọn ít nhất một sản phẩm trước khi đặt hàng', 'error');
                 return;
             }
-            ShopeeApp.toast('Đặt hàng thành công (demo)!', 'success');
+
+            const shippingData = {
+                recipientName: shippingForm.recipientName.value.trim(),
+                recipientPhone: shippingForm.recipientPhone.value.trim(),
+                addressLine: shippingForm.addressLine.value.trim(),
+                city: shippingForm.city.value.trim(),
+                note: shippingForm.note.value.trim()
+            };
+
+            const errors = [];
+            if (!shippingData.recipientName) errors.push('Vui lòng nhập tên người nhận');
+            if (!ShopeeApp.validators.phone(shippingData.recipientPhone)) errors.push('Số điện thoại người nhận không hợp lệ');
+            if (!shippingData.addressLine) errors.push('Địa chỉ giao hàng chưa đầy đủ');
+            if (!shippingData.city) errors.push('Vui lòng nhập tỉnh/thành phố');
+
+            let cardPayload = {};
+            if (currentPaymentMethod === 'card') {
+                if (!cardNameInput.value.trim()) {
+                    errors.push('Vui lòng nhập tên in trên thẻ');
+                }
+                const cardErrors = validateCardInfo(cardNumberInput.value.trim(), cardExpiryInput.value.trim(), cardCvvInput.value.trim());
+                if (cardErrors.length) {
+                    errors.push(...cardErrors);
+                } else {
+                    cardPayload = {
+                        cardName: cardNameInput.value.trim(),
+                        cardNumber: cardNumberInput.value.trim(),
+                        expiry: cardExpiryInput.value.trim(),
+                        cvv: cardCvvInput.value.trim()
+                    };
+                }
+            }
+
+            if (errors.length) {
+                setCheckoutMessage(errors.join(' • '), 'error');
+                return;
+            }
+
+            const orderSubtotal = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const orderTotal = orderSubtotal + currentShippingFee;
+
+            ShopeeApp.saveCheckoutProfile({
+                shippingMethod: currentShippingMethod,
+                paymentMethod: currentPaymentMethod,
+                shippingAddress: shippingData,
+                paymentCard: cardPayload
+            });
+
+            ShopeeApp.toast('Đặt hàng thành công!', 'success');
+            alert(`Đơn hàng đang được xử lý.\nSố sản phẩm: ${selectedItems.length}\nTổng thanh toán: ${formatPrice(orderTotal)}`);
             ShopeeApp.clearCart();
             selectedIds.clear();
             renderCart();
+            setCheckoutMessage('Thông tin đơn hàng đã được lưu!', 'success');
         });
 
+        populateCheckoutForm();
         renderCart();
     </script>
 </body>

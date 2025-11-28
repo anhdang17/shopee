@@ -1,5 +1,16 @@
 const dataUrl = './assets/db/shopee.json'
 
+const DEFAULT_FILTERS = {
+    search: '',
+    minPrice: null,
+    maxPrice: null,
+    origin: '',
+    promoTag: ''
+};
+
+let currentFilters = { ...DEFAULT_FILTERS };
+let allProducts = [];
+
 // Virtual data for promotions (no database needed)
 const virtualPromotions = [
     {
@@ -87,6 +98,11 @@ const virtualSellers = [
         badge: 'Yêu thích'
     }
 ];
+
+function priceToNumber(value) {
+    if (typeof value === 'number') return value;
+    return Number((value || '').toString().replace(/[^\d]/g, '')) || 0;
+}
 
 function updateCartCount() {
     const cartCount = document.querySelector('.header__cart-count');
@@ -272,18 +288,11 @@ function initSearch() {
             searchHistoryList = searchHistoryList.slice(0, 10);
             localStorage.setItem('shopeeSearchHistory', JSON.stringify(searchHistoryList));
             
-            // Filter products
-            fetch(dataUrl)
-                .then(response => response.json())
-                .then(products => {
-                    const filtered = products.filter(p => 
-                        p.name.toLowerCase().includes(searchTerm.toLowerCase())
-                    );
-                    renderItem(filtered);
-                    responsive();
-                    showNotification(`Tìm thấy ${filtered.length} sản phẩm`);
-                });
-            
+            currentFilters.search = searchTerm.toLowerCase();
+            if (searchInput.value !== searchTerm) {
+                searchInput.value = searchTerm;
+            }
+            applyFilters();
             searchInput.value = searchTerm;
             if (searchHistory) searchHistory.style.display = 'none';
         }
@@ -323,13 +332,7 @@ function initCategoryFilters() {
     const categoryCheckboxes = document.querySelectorAll('.category-group-item-check');
     categoryCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
-            // Filter products based on selected categories
-            fetch(dataUrl)
-                .then(response => response.json())
-                .then(products => {
-                    renderItem(products);
-                    responsive();
-                });
+            applyFilters();
         });
     });
 }
@@ -345,17 +348,105 @@ function initPriceFilter() {
             const fromPrice = parseInt(fromInput.value.replace(/[^\d]/g, '')) || 0;
             const toPrice = parseInt(toInput.value.replace(/[^\d]/g, '')) || Infinity;
             
-            fetch(dataUrl)
-                .then(response => response.json())
-                .then(products => {
-                    const filtered = products.filter(p => {
-                        const price = parseInt(p.newPrice.replace(/[^\d]/g, ''));
-                        return price >= fromPrice && price <= toPrice;
-                    });
-                    renderItem(filtered);
-                    responsive();
-                    showNotification(`Tìm thấy ${filtered.length} sản phẩm trong khoảng giá`);
-                });
+            currentFilters.minPrice = fromPrice || null;
+            currentFilters.maxPrice = toPrice === Infinity ? null : toPrice;
+            const smartMin = document.getElementById('filterPriceMin');
+            const smartMax = document.getElementById('filterPriceMax');
+            if (smartMin) smartMin.value = currentFilters.minPrice || '';
+            if (smartMax) smartMax.value = currentFilters.maxPrice || '';
+            applyFilters();
+            showNotification('Đã áp dụng bộ lọc giá!');
+        });
+    }
+}
+
+function refreshProducts(items) {
+    renderItem(items);
+    responsive();
+    handlePagination();
+}
+
+function applyFilters() {
+    if (!allProducts.length) return;
+    let items = [...allProducts];
+    const { search, minPrice, maxPrice, origin, promoTag } = currentFilters;
+
+    if (search) {
+        const needle = search.toLowerCase();
+        items = items.filter(p => (p.name || '').toLowerCase().includes(needle));
+    }
+    if (origin) {
+        const originNeedle = origin.toLowerCase();
+        items = items.filter(p => (p.origin || '').toLowerCase() === originNeedle);
+    }
+    if (minPrice !== null) {
+        items = items.filter(p => priceToNumber(p.newPrice) >= minPrice);
+    }
+    if (maxPrice !== null) {
+        items = items.filter(p => priceToNumber(p.newPrice) <= maxPrice);
+    }
+    if (promoTag === 'flash') {
+        items = items.filter(p => Number(p.saleOff) >= 30);
+    } else if (promoTag === 'freeship') {
+        items = items.filter(p => Number(p.saleOff) >= 20);
+    } else if (promoTag === 'new') {
+        items = items.filter(p => Number(p.id) >= 15);
+    }
+    refreshProducts(items);
+    updateCartCount();
+}
+
+function setupSmartFilters() {
+    const minInput = document.getElementById('filterPriceMin');
+    const maxInput = document.getElementById('filterPriceMax');
+    const originSelect = document.getElementById('filterOrigin');
+    const chips = document.querySelectorAll('[data-filter-chip]');
+    const resetBtn = document.getElementById('filterReset');
+
+    if (minInput) {
+        minInput.addEventListener('change', () => {
+            const value = parseInt(minInput.value, 10);
+            currentFilters.minPrice = Number.isFinite(value) ? value : null;
+            applyFilters();
+        });
+    }
+    if (maxInput) {
+        maxInput.addEventListener('change', () => {
+            const value = parseInt(maxInput.value, 10);
+            currentFilters.maxPrice = Number.isFinite(value) ? value : null;
+            applyFilters();
+        });
+    }
+    if (originSelect) {
+        originSelect.addEventListener('change', () => {
+            currentFilters.origin = originSelect.value;
+            applyFilters();
+        });
+    }
+    if (chips.length) {
+        chips.forEach(chip => {
+            chip.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                const isActive = this.classList.contains('smart-filter-chip--active');
+                chips.forEach(c => c.classList.remove('smart-filter-chip--active'));
+                if (isActive) {
+                    currentFilters.promoTag = '';
+                } else {
+                    this.classList.add('smart-filter-chip--active');
+                    currentFilters.promoTag = value;
+                }
+                applyFilters();
+            });
+        });
+    }
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            currentFilters = { ...DEFAULT_FILTERS };
+            if (minInput) minInput.value = '';
+            if (maxInput) maxInput.value = '';
+            if (originSelect) originSelect.value = '';
+            chips.forEach(c => c.classList.remove('smart-filter-chip--active'));
+            applyFilters();
         });
     }
 }
@@ -368,24 +459,22 @@ document.addEventListener('DOMContentLoaded', function() {
     initSearch();
     initCategoryFilters();
     initPriceFilter();
+    setupSmartFilters();
 });
 
 fetch(dataUrl)
     .then(response => response.json())
-    .then(renderItem)
-    .then(responsive)
-    .then(handlePagination)
+    .then(products => {
+        allProducts = products;
+        applyFilters();
+    });
 
 function shuffer(){
-    fetch(dataUrl)
-        .then(response => response.json())
-        .then(list => {
-            list = list.sort(() => Math.random() - 0.5)
-            return list;
-        })
-        .then(renderItem)
-        .then(responsive)
-        .then(handlePagination)
+    if (!allProducts.length) {
+        return;
+    }
+    allProducts = [...allProducts].sort(() => Math.random() - 0.5);
+    applyFilters();
 }
 
 // main product

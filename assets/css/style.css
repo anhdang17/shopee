@@ -1654,3 +1654,90 @@ border-color: red green blue yellow */
 .home-product-item-footer:hover {
     background-color: #d32f2f;
 }
+
+/* Smart filter panel */
+.smart-filter-panel {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.smart-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 180px;
+    flex: 1;
+}
+
+.smart-filter-group label {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: #888;
+}
+
+.smart-filter-row {
+    display: flex;
+    gap: 8px;
+}
+
+.smart-filter-row input,
+.smart-filter-row select {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1.4rem;
+}
+
+.smart-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.smart-filter-chip {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    font-size: 1.3rem;
+    background: #fff;
+    transition: all 0.2s ease;
+}
+
+.smart-filter-chip--active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+
+.smart-filter-actions {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.smart-filter-actions button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background: #f5f5f5;
+    cursor: pointer;
+    font-size: 1.4rem;
+}
+
+.smart-filter-actions button:hover {
+    background: #eaeaea;
+}
+
+@media (max-width: 768px) {
+    .smart-filter-panel {
+        flex-direction: column;
+    }
+}

@@ -536,6 +536,37 @@
                             </div>
                         </div>
                         <!-- home product -->
+                        <div class="smart-filter-panel">
+                            <div class="smart-filter-group">
+                                <label>Khoảng giá</label>
+                                <div class="smart-filter-row">
+                                    <input type="number" id="filterPriceMin" placeholder="Từ (đ)">
+                                    <input type="number" id="filterPriceMax" placeholder="Đến (đ)">
+                                </div>
+                            </div>
+                            <div class="smart-filter-group">
+                                <label>Xuất xứ</label>
+                                <select id="filterOrigin">
+                                    <option value="">Tất cả</option>
+                                    <option value="Hà Nội">Hà Nội</option>
+                                    <option value="Hồ Chí Minh">Hồ Chí Minh</option>
+                                    <option value="Đà Nẵng">Đà Nẵng</option>
+                                    <option value="Huế">Huế</option>
+                                    <option value="Lào Cài">Lào Cai</option>
+                                </select>
+                            </div>
+                            <div class="smart-filter-group">
+                                <label>Ưu đãi nhanh</label>
+                                <div class="smart-filter-chips">
+                                    <span class="smart-filter-chip" data-filter-chip="promo" data-value="flash">Flash Sale ≥ 30%</span>
+                                    <span class="smart-filter-chip" data-filter-chip="promo" data-value="freeship">Freeship 0đ</span>
+                                    <span class="smart-filter-chip" data-filter-chip="promo" data-value="new">Hàng mới</span>
+                                </div>
+                            </div>
+                            <div class="smart-filter-actions">
+                                <button type="button" id="filterReset">Xóa bộ lọc</button>
+                            </div>
+                        </div>
                         <div class="home-product">
                             <nav class="mobile-category">
                                 <ul class="mobile-category-list">

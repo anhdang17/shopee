@@ -9,7 +9,8 @@
         FORGOT_TOKENS: 'shopeeForgotTokens',
         INVENTORY: 'shopeeInventory',
         SELLER_ACCOUNTS: 'shopeeSellerAccounts',
-        PROMO_ASSIGNMENTS: 'shopeePromoAssignments'
+        PROMO_ASSIGNMENTS: 'shopeePromoAssignments',
+        CHECKOUT_PROFILE: 'shopeeCheckoutProfile'
     };
 
     const DEFAULT_USERS = [
@@ -65,6 +66,24 @@
         ]
     };
 
+    const DEFAULT_CHECKOUT_PROFILE = {
+        shippingMethod: 'standard',
+        paymentMethod: 'cod',
+        shippingAddress: {
+            recipientName: '',
+            recipientPhone: '',
+            addressLine: '',
+            city: '',
+            note: ''
+        },
+        paymentCard: {
+            cardName: '',
+            cardNumber: '',
+            expiry: '',
+            cvv: ''
+        }
+    };
+
     /**
      * Utilities
      */
@@ -83,6 +102,7 @@
     seedIfNeeded(STORAGE_KEYS.SELLER_REPORTS, DEFAULT_REPORTS);
     seedIfNeeded(STORAGE_KEYS.FORGOT_TOKENS, {});
     seedIfNeeded(STORAGE_KEYS.PROMO_ASSIGNMENTS, {});
+    seedIfNeeded(STORAGE_KEYS.CHECKOUT_PROFILE, DEFAULT_CHECKOUT_PROFILE);
 
     const parseJSON = (value, fallback) => {
         try {
@@ -288,6 +308,20 @@
         localStorage.setItem(STORAGE_KEYS.FORGOT_TOKENS, JSON.stringify(map));
     }
 
+    function getCheckoutProfile() {
+        return parseJSON(localStorage.getItem(STORAGE_KEYS.CHECKOUT_PROFILE), DEFAULT_CHECKOUT_PROFILE);
+    }
+
+    function saveCheckoutProfile(profile) {
+        const payload = {
+            ...DEFAULT_CHECKOUT_PROFILE,
+            ...profile,
+            shippingAddress: { ...DEFAULT_CHECKOUT_PROFILE.shippingAddress, ...(profile.shippingAddress || {}) },
+            paymentCard: { ...DEFAULT_CHECKOUT_PROFILE.paymentCard, ...(profile.paymentCard || {}) }
+        };
+        localStorage.setItem(STORAGE_KEYS.CHECKOUT_PROFILE, JSON.stringify(payload));
+    }
+
     function issueForgotToken(email) {
         const tokens = getForgotTokens();
         const token = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -394,7 +428,9 @@
         getAvailableStock,
         formatCurrency,
         getPromoAssignments,
-        savePromoAssignments
+        savePromoAssignments,
+        getCheckoutProfile,
+        saveCheckoutProfile
     };
 })(window);
 
