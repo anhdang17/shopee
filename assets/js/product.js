@@ -247,6 +247,8 @@ function initSearch() {
             searchInput.value = searchTerm;
             if (searchHistory) searchHistory.style.display = 'none';
         }
+        // expose for inline history links
+        window.performSearch = performSearch;
         
         searchInput.addEventListener('focus', function() {
             updateSearchHistory();
