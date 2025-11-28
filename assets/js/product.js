@@ -88,12 +88,10 @@ const virtualSellers = [
     }
 ];
 
-// Cart management (using localStorage)
-let cartItems = JSON.parse(localStorage.getItem('shopeeCart')) || [];
-
 function updateCartCount() {
     const cartCount = document.querySelector('.header__cart-count');
-    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    const items = ShopeeApp ? ShopeeApp.getCart() : (JSON.parse(localStorage.getItem('shopeeCart')) || []);
+    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
     if (cartCount) {
         if (totalItems > 0) {
             cartCount.textContent = totalItems;
@@ -102,34 +100,76 @@ function updateCartCount() {
             cartCount.style.display = 'none';
         }
     }
+    renderMiniCart(items);
+}
+
+function renderMiniCart(items) {
+    const emptyState = document.querySelector('.header__cart-list.no-cart');
+    const filledState = document.querySelector('.header__cart-list.has-cart');
+    const listWrapper = filledState ? filledState.querySelector('.header__cart-list-item') : null;
+
+    if (!emptyState || !filledState || !listWrapper) {
+        return;
+    }
+
+    if (!items.length) {
+        emptyState.style.display = 'block';
+        filledState.style.display = 'none';
+        return;
+    }
+
+    emptyState.style.display = 'none';
+    filledState.style.display = 'block';
+    const html = items.slice(0, 5).map(item => `
+        <li class="header__cart-item">
+            <img src="${item.image}" class="header__cart-item-img" alt="${item.name}">
+            <div class="header__cart-item-info">
+                <div class="header__cart-item-heading">
+                    <h3 class="header__cart-item-name">${item.name}</h3>
+                    <p class="header__cart-item-price">${ShopeeApp.formatCurrency(item.price)}</p>
+                </div>
+                <div class="header__cart-item-body">
+                    <p class="header__cart-item-number">x ${item.quantity}</p>
+                    <div class="header__cart-item-close" data-mini-remove="${item.id}">
+                        Xoá
+                        <i class="fas fa-times"></i>
+                    </div>
+                </div>
+            </div>
+        </li>
+    `).join('');
+    listWrapper.innerHTML = html;
+
+    listWrapper.querySelectorAll('[data-mini-remove]').forEach(btn => {
+        btn.addEventListener('click', function(event) {
+            event.preventDefault();
+            const id = this.getAttribute('data-mini-remove');
+            ShopeeApp.removeCartItem(id);
+            updateCartCount();
+            ShopeeApp.toast('Đã xóa sản phẩm khỏi giỏ', 'success');
+        });
+    });
 }
 
 function addToCart(product) {
-    const existingItem = cartItems.find(item => item.id === product.id);
-    if (existingItem) {
-        existingItem.quantity += 1;
+    const result = ShopeeApp.addToCartItem(product, 1);
+    if (result.ok) {
+        updateCartCount();
+        showNotification('Đã thêm vào giỏ hàng!');
     } else {
-        cartItems.push({
-            id: product.id,
-            name: product.name,
-            price: product.newPrice,
-            image: `./assets/img/home/${product.id}.PNG`,
-            quantity: 1
-        });
+        showNotification(result.reason || 'Không thể thêm sản phẩm', 'error');
     }
-    localStorage.setItem('shopeeCart', JSON.stringify(cartItems));
-    updateCartCount();
-    showNotification('Đã thêm vào giỏ hàng!');
 }
 
-function showNotification(message) {
+function showNotification(message, type = 'success') {
     // Create notification element
     const notification = document.createElement('div');
+    const background = type === 'error' ? '#dc3545' : '#4caf50';
     notification.style.cssText = `
         position: fixed;
         top: 100px;
         right: 20px;
-        background: #4caf50;
+        background: ${background};
         color: white;
         padding: 16px 24px;
         border-radius: 8px;

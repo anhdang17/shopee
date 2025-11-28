@@ -18,6 +18,7 @@
         </a>
         <div class="auth-card">
             <h1 class="auth-title">Đăng nhập Người bán</h1>
+            <div class="auth-alert" id="sellerLoginMessage" role="alert" aria-live="polite"></div>
             <form class="auth-form" id="sellerLoginForm">
                 <label class="auth-label" for="seller-email">Email / Số điện thoại</label>
                 <input type="text" name="email" id="seller-email" class="auth-input" placeholder="email@domain.com hoặc 0123456789">
@@ -30,7 +31,7 @@
                         <input type="checkbox" name="remember">
                         <span>Ghi nhớ đăng nhập</span>
                     </label>
-                    <a href="#" class="auth-forgot">Quên mật khẩu?</a>
+                    <a href="./forgot-password.html" class="auth-forgot">Quên mật khẩu?</a>
                 </div>
 
                 <button type="submit" class="btn btn--primary auth-submit">Đăng nhập</button>
@@ -52,9 +53,9 @@
                 Chưa có tài khoản người bán?
                 <a href="./seller-products.html">Đăng ký ngay</a>
             </p>
-            <p class="auth-switch">
+            <div class="auth-switch">
                 <a href="./index.html">← Quay lại trang chủ</a>
-            </p>
+            </div>
         </div>
     </div>
 
@@ -141,22 +142,85 @@
         }
     </style>
 
+    <script src="./assets/js/app.js"></script>
     <script>
         const form = document.getElementById('sellerLoginForm');
+        const messageBox = document.getElementById('sellerLoginMessage');
+        const rememberIdentity = localStorage.getItem('shopeeSellerRemember');
+        if (rememberIdentity) {
+            document.getElementById('seller-email').value = rememberIdentity;
+            form.querySelector('input[name="remember"]').checked = true;
+        }
+
+        function setMessage(text, type = 'info') {
+            if (!messageBox) return;
+            messageBox.textContent = text || '';
+            messageBox.className = `auth-alert auth-alert--${type}`;
+        }
+
+        function findSeller(identity) {
+            const normalized = (identity || '').trim().toLowerCase();
+            return ShopeeApp.getSellerAccounts().find(account =>
+                account.email.toLowerCase() === normalized || account.phone === normalized
+            );
+        }
+
         form.addEventListener('submit', (event) => {
             event.preventDefault();
             const data = new FormData(form);
-            
-            // Store seller session
-            const seller = {
-                email: data.get('email') || 'seller@example.com',
-                name: 'Người bán Shopee',
-                shopName: 'Shop ABC',
+            const identity = (data.get('email') || '').trim();
+            const password = (data.get('password') || '').trim();
+            const remember = data.get('remember') === 'on';
+
+            if (!identity) {
+                setMessage('Vui lòng nhập email hoặc số điện thoại', 'error');
+                return;
+            }
+
+            if (!password) {
+                setMessage('Vui lòng nhập mật khẩu', 'error');
+                return;
+            }
+
+            const account = findSeller(identity);
+            if (!account) {
+                setMessage('Tài khoản không tồn tại', 'error');
+                return;
+            }
+
+            if (account.role !== 'seller') {
+                setMessage('Tài khoản này không có quyền người bán', 'error');
+                return;
+            }
+
+            if (account.status === 'locked') {
+                setMessage('Tài khoản đã bị khóa. Vui lòng liên hệ hỗ trợ.', 'error');
+                return;
+            }
+
+            if (account.password !== password) {
+                setMessage('Mật khẩu không chính xác', 'error');
+                return;
+            }
+
+            if (remember) {
+                localStorage.setItem('shopeeSellerRemember', identity);
+            } else {
+                localStorage.removeItem('shopeeSellerRemember');
+            }
+
+            const sellerSession = {
+                email: account.email,
+                name: account.name,
+                shopName: account.name,
                 loginTime: new Date().toISOString()
             };
-            
-            sessionStorage.setItem('shopeeSeller', JSON.stringify(seller));
-            window.location.href = './seller-products.html';
+
+            sessionStorage.setItem('shopeeSeller', JSON.stringify(sellerSession));
+            setMessage('Đăng nhập thành công! Đang chuyển hướng...', 'success');
+            setTimeout(() => {
+                window.location.href = './seller-products.html';
+            }, 600);
         });
     </script>
 </body>

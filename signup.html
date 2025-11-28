@@ -17,6 +17,7 @@
         </a>
         <div class="auth-card">
             <h1 class="auth-title">Đăng ký tài khoản</h1>
+            <div class="auth-alert" id="signupMessage" role="alert" aria-live="polite"></div>
             <form class="auth-form" id="signupForm">
                 <label class="auth-label" for="signup-name">Họ và tên</label>
                 <input type="text" name="name" id="signup-name" class="auth-input" placeholder="Nguyễn Văn A">
@@ -35,15 +36,39 @@
 
                 <button type="submit" class="btn btn--primary auth-submit">Đăng ký</button>
             </form>
-            <p class="auth-switch">
+            <div class="auth-switch">
                 Đã có tài khoản?
                 <a href="./signin.html">Đăng nhập</a>
-            </p>
+                ·
+                <a href="./forgot-password.html">Quên mật khẩu?</a>
+            </div>
         </div>
     </div>
 
+    <script src="./assets/js/app.js"></script>
     <script>
         const signupForm = document.getElementById('signupForm');
+        const messageBox = document.getElementById('signupMessage');
+
+        function setMessage(text, type = 'info') {
+            if (!messageBox) return;
+            messageBox.textContent = text || '';
+            messageBox.className = `auth-alert auth-alert--${type}`;
+        }
+
+        function validatePassword(password) {
+            if (!password || password.length < 8) {
+                return 'Mật khẩu phải có ít nhất 8 ký tự';
+            }
+            if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d/.test(password)) {
+                return 'Mật khẩu phải gồm chữ hoa, chữ thường và số';
+            }
+            if (!/[^A-Za-z0-9]/.test(password)) {
+                return 'Mật khẩu phải có ký tự đặc biệt';
+            }
+            return '';
+        }
+
         signupForm.addEventListener('submit', (event) => {
             event.preventDefault();
             const data = new FormData(signupForm);
@@ -53,11 +78,43 @@
                 email: data.get('email') || 'user@example.com',
                 phone: data.get('phone') || 'Chưa cập nhật',
                 address: data.get('address') || 'Đang cập nhật',
-                memberSince: new Date().getFullYear()
+                memberSince: new Date().getFullYear(),
+                password: data.get('password') || ''
             };
 
-            sessionStorage.setItem('shopeeUser', JSON.stringify(user));
-            window.location.href = './profile.html';
+            const errors = [];
+
+            if (!ShopeeApp.validators.email(user.email)) {
+                errors.push('Email không hợp lệ');
+            } else if (ShopeeApp.findUser(user.email)) {
+                errors.push('Email đã tồn tại');
+            }
+
+            if (!ShopeeApp.validators.phone(user.phone)) {
+                errors.push('Số điện thoại không hợp lệ (10 chữ số)');
+            }
+
+            const passwordReason = validatePassword(user.password);
+            if (passwordReason) {
+                errors.push(passwordReason);
+            }
+
+            if (errors.length) {
+                setMessage(errors.join(' • '), 'error');
+                return;
+            }
+
+            const payload = {
+                ...user,
+                id: `user-${Date.now()}`
+            };
+
+            ShopeeApp.upsertUser(payload);
+            sessionStorage.setItem('shopeeUser', JSON.stringify(payload));
+            setMessage('Đăng ký thành công! Đang chuyển trang...', 'success');
+            setTimeout(() => {
+                window.location.href = './profile.html';
+            }, 800);
         });
     </script>
 </body>

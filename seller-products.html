@@ -55,68 +55,7 @@
                 </div>
 
                 <div class="seller-products" id="productsList">
-                    <div class="seller-product-card">
-                        <img src="./assets/img/buy/1.PNG" alt="Product" class="seller-product-img">
-                        <div class="seller-product-info">
-                            <h3 class="seller-product-name">Thanh Thanh 2000 1m57 46kg 88-62-89</h3>
-                            <p class="seller-product-sku">SKU: SP001</p>
-                            <div class="seller-product-meta">
-                                <span class="seller-product-price">2.000.000đ</span>
-                                <span class="seller-product-stock">Tồn kho: 50</span>
-                                <span class="seller-product-status seller-product-status--active">Đang bán</span>
-                            </div>
-                        </div>
-                        <div class="seller-product-actions">
-                            <button class="seller-action-btn" data-action="edit">
-                                <i class="fas fa-edit"></i> Sửa
-                            </button>
-                            <button class="seller-action-btn" data-action="delete">
-                                <i class="fas fa-trash"></i> Xóa
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="seller-product-card">
-                        <img src="./assets/img/buy/2.PNG" alt="Product" class="seller-product-img">
-                        <div class="seller-product-info">
-                            <h3 class="seller-product-name">Hồng Ánh 1998 1m62 48kg 89-64-91</h3>
-                            <p class="seller-product-sku">SKU: SP002</p>
-                            <div class="seller-product-meta">
-                                <span class="seller-product-price">2.500.000đ</span>
-                                <span class="seller-product-stock">Tồn kho: 30</span>
-                                <span class="seller-product-status seller-product-status--active">Đang bán</span>
-                            </div>
-                        </div>
-                        <div class="seller-product-actions">
-                            <button class="seller-action-btn" data-action="edit">
-                                <i class="fas fa-edit"></i> Sửa
-                            </button>
-                            <button class="seller-action-btn" data-action="delete">
-                                <i class="fas fa-trash"></i> Xóa
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="seller-product-card">
-                        <img src="./assets/img/buy/3.PNG" alt="Product" class="seller-product-img">
-                        <div class="seller-product-info">
-                            <h3 class="seller-product-name">Quỳnh Như 1999 1m65 49kg 90-62-89</h3>
-                            <p class="seller-product-sku">SKU: SP003</p>
-                            <div class="seller-product-meta">
-                                <span class="seller-product-price">2.800.000đ</span>
-                                <span class="seller-product-stock">Tồn kho: 20</span>
-                                <span class="seller-product-status seller-product-status--pending">Chờ duyệt</span>
-                            </div>
-                        </div>
-                        <div class="seller-product-actions">
-                            <button class="seller-action-btn" data-action="edit">
-                                <i class="fas fa-edit"></i> Sửa
-                            </button>
-                            <button class="seller-action-btn" data-action="delete">
-                                <i class="fas fa-trash"></i> Xóa
-                            </button>
-                        </div>
-                    </div>
+                    <!-- Rendered dynamically -->
                 </div>
             </div>
         </div>
@@ -130,6 +69,7 @@
                 <button class="seller-modal__close" id="closeModal">&times;</button>
             </div>
             <form class="seller-modal__form" id="productForm">
+                <div class="auth-alert" id="productFormMessage" role="alert" aria-live="polite"></div>
                 <label class="auth-label">Tên sản phẩm</label>
                 <input type="text" class="auth-input" name="name" required>
 
@@ -138,6 +78,13 @@
 
                 <label class="auth-label">Số lượng tồn kho</label>
                 <input type="number" class="auth-input" name="stock" required>
+
+                <label class="auth-label">Trạng thái</label>
+                <select class="auth-input" name="status">
+                    <option value="active">Đang bán</option>
+                    <option value="pending">Chờ duyệt</option>
+                    <option value="inactive">Ngừng bán</option>
+                </select>
 
                 <label class="auth-label">Mô tả</label>
                 <textarea class="auth-input" name="description" rows="4"></textarea>
@@ -313,10 +260,23 @@
             color: #856404;
         }
 
+        .seller-product-status--inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
         .seller-product-actions {
             display: flex;
             flex-direction: column;
             gap: 8px;
+        }
+
+        .seller-empty {
+            padding: 40px;
+            text-align: center;
+            color: #888;
+            background: #fff;
+            border-radius: 8px;
         }
 
         .seller-action-btn {
@@ -401,68 +361,201 @@
         }
     </style>
 
+    <script src="./assets/js/app.js"></script>
     <script>
-        // Load seller info
         const sellerData = sessionStorage.getItem('shopeeSeller');
         if (sellerData) {
             const seller = JSON.parse(sellerData);
             document.getElementById('sellerName').textContent = seller.name || 'Người bán';
         } else {
-            // Redirect to login if not authenticated
             window.location.href = './seller-login.html';
         }
 
-        // Modal controls
         const addProductBtn = document.getElementById('addProductBtn');
         const addProductModal = document.getElementById('addProductModal');
-        const closeModal = document.getElementById('closeModal');
+        const closeModalBtn = document.getElementById('closeModal');
         const cancelBtn = document.getElementById('cancelBtn');
         const productForm = document.getElementById('productForm');
+        const productsListEl = document.getElementById('productsList');
+        const searchInput = document.getElementById('productSearch');
+        const statusFilter = document.getElementById('statusFilter');
+        const formMessage = document.getElementById('productFormMessage');
+        let editingProductId = null;
 
-        addProductBtn.addEventListener('click', () => {
-            addProductModal.style.display = 'flex';
-        });
+        function setFormMessage(text = '', type = 'info') {
+            if (!formMessage) return;
+            if (!text) {
+                formMessage.textContent = '';
+                formMessage.className = 'auth-alert';
+                return;
+            }
+            formMessage.textContent = text;
+            formMessage.className = `auth-alert auth-alert--${type}`;
+        }
 
-        closeModal.addEventListener('click', () => {
-            addProductModal.style.display = 'none';
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            addProductModal.style.display = 'none';
-        });
-
-        productForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(productForm);
-            alert('Sản phẩm đã được thêm (demo)');
-            addProductModal.style.display = 'none';
+        function openModal(product = null) {
+            editingProductId = product ? product.id : null;
             productForm.reset();
-        });
+            setFormMessage('');
+            addProductModal.style.display = 'flex';
+            const title = addProductModal.querySelector('.seller-modal__header h2');
+            title.textContent = editingProductId ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới';
+            productForm.querySelector('.btn.btn--primary').textContent = editingProductId ? 'Cập nhật' : 'Lưu';
 
-        // Delete product
-        document.querySelectorAll('[data-action="delete"]').forEach(btn => {
-            btn.addEventListener('click', function() {
+            if (product) {
+                productForm.name.value = product.name;
+                productForm.price.value = product.price;
+                productForm.stock.value = product.stock;
+                productForm.status.value = product.status || 'active';
+                productForm.description.value = product.description || '';
+                productForm.image.value = product.image || '';
+            }
+        }
+
+        function closeModal() {
+            addProductModal.style.display = 'none';
+            editingProductId = null;
+        }
+
+        addProductBtn.addEventListener('click', () => openModal());
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        function formatMoney(value) {
+            return ShopeeApp.formatCurrency(value);
+        }
+
+        function renderProducts() {
+            const products = ShopeeApp.getSellerProducts();
+            const searchTerm = (searchInput.value || '').toLowerCase();
+            const statusValue = statusFilter.value;
+
+            const filtered = products.filter(product => {
+                const matchesName = product.name.toLowerCase().includes(searchTerm);
+                const matchesStatus = statusValue ? product.status === statusValue : true;
+                return matchesName && matchesStatus;
+            });
+
+            if (!filtered.length) {
+                productsListEl.innerHTML = '<div class="seller-empty">Không tìm thấy sản phẩm phù hợp</div>';
+                return;
+            }
+
+            const html = filtered.map(product => {
+                const statusClass = {
+                    active: 'seller-product-status--active',
+                    pending: 'seller-product-status--pending',
+                    inactive: 'seller-product-status--inactive'
+                }[product.status] || 'seller-product-status--pending';
+
+                const statusLabel = product.status === 'active'
+                    ? 'Đang bán'
+                    : product.status === 'inactive'
+                        ? 'Ngừng bán'
+                        : 'Chờ duyệt';
+
+                return `
+                    <div class="seller-product-card" data-id="${product.id}">
+                        <img src="${product.image || './assets/img/buy/1.PNG'}" alt="${product.name}" class="seller-product-img">
+                        <div class="seller-product-info">
+                            <h3 class="seller-product-name">${product.name}</h3>
+                            <p class="seller-product-sku">SKU: ${product.sku}</p>
+                            <div class="seller-product-meta">
+                                <span class="seller-product-price">${formatMoney(product.price)}</span>
+                                <span class="seller-product-stock">Tồn kho: ${product.stock}</span>
+                                <span class="seller-product-status ${statusClass}">${statusLabel}</span>
+                            </div>
+                        </div>
+                        <div class="seller-product-actions">
+                            <button class="seller-action-btn" data-action="edit" data-id="${product.id}">
+                                <i class="fas fa-edit"></i> Sửa
+                            </button>
+                            <button class="seller-action-btn" data-action="delete" data-id="${product.id}">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            productsListEl.innerHTML = html;
+        }
+
+        productsListEl.addEventListener('click', (event) => {
+            const actionBtn = event.target.closest('[data-action]');
+            if (!actionBtn) return;
+            const productId = actionBtn.dataset.id;
+            const action = actionBtn.dataset.action;
+            const products = ShopeeApp.getSellerProducts();
+            const product = products.find(item => item.id === productId);
+
+            if (action === 'edit' && product) {
+                openModal(product);
+                return;
+            }
+
+            if (action === 'delete') {
                 if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
-                    this.closest('.seller-product-card').remove();
+                    const next = products.filter(item => item.id !== productId);
+                    ShopeeApp.saveSellerProducts(next);
+                    ShopeeApp.toast('Đã xóa sản phẩm', 'success');
+                    renderProducts();
                 }
-            });
+            }
         });
 
-        // Edit product
-        document.querySelectorAll('[data-action="edit"]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                alert('Chức năng sửa sản phẩm đang được phát triển');
-            });
+        productForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const data = new FormData(productForm);
+            const payload = {
+                id: editingProductId || `sp-${Date.now()}`,
+                name: (data.get('name') || '').trim(),
+                price: Number(data.get('price')),
+                stock: Number(data.get('stock')),
+                status: data.get('status') || 'active',
+                description: (data.get('description') || '').trim(),
+                image: (data.get('image') || '').trim()
+            };
+
+            const errors = [];
+            if (!payload.name) {
+                errors.push('Tên sản phẩm không được để trống');
+            }
+            if (!Number.isFinite(payload.price) || payload.price <= 0) {
+                errors.push('Giá sản phẩm phải lớn hơn 0');
+            }
+            if (!Number.isInteger(payload.stock) || payload.stock < 0) {
+                errors.push('Tồn kho phải là số không âm');
+            }
+            if (!payload.image) {
+                errors.push('Vui lòng nhập đường dẫn hình ảnh');
+            } else if (!ShopeeApp.validators.imageUrl(payload.image)) {
+                errors.push('Ảnh sản phẩm phải là URL hợp lệ (jpg/png)');
+            }
+
+            if (errors.length) {
+                setFormMessage(errors.join(' • '), 'error');
+                return;
+            }
+
+            let products = ShopeeApp.getSellerProducts();
+            const existingIndex = products.findIndex(item => item.id === payload.id);
+            if (existingIndex > -1) {
+                products[existingIndex] = { ...products[existingIndex], ...payload };
+            } else {
+                const sku = `SP${Date.now()}`;
+                products.push({ ...payload, sku });
+            }
+            ShopeeApp.saveSellerProducts(products);
+            ShopeeApp.toast(editingProductId ? 'Đã cập nhật sản phẩm' : 'Đã thêm sản phẩm', 'success');
+            closeModal();
+            renderProducts();
         });
 
-        // Search and filter
-        document.getElementById('productSearch').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            document.querySelectorAll('.seller-product-card').forEach(card => {
-                const name = card.querySelector('.seller-product-name').textContent.toLowerCase();
-                card.style.display = name.includes(searchTerm) ? 'flex' : 'none';
-            });
-        });
+        searchInput.addEventListener('input', renderProducts);
+        statusFilter.addEventListener('change', renderProducts);
+
+        renderProducts();
     </script>
 </body>
 </html>

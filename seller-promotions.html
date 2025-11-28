@@ -54,51 +54,43 @@
                     </div>
 
                     <div class="seller-promotions" id="promotionsList">
-                        <div class="seller-promotion-card">
-                            <div class="seller-promotion-header">
-                                <h3>Giảm giá 20% cho tất cả sản phẩm</h3>
-                                <span class="seller-promotion-status seller-promotion-status--active">Đang hoạt động</span>
+                        <!-- Rendered dynamically -->
+                    </div>
+                    <div class="seller-apply-promo">
+                        <h3>Áp dụng khuyến mãi cho sản phẩm</h3>
+                        <div class="auth-alert" id="applyPromoMessage" role="alert" aria-live="polite"></div>
+                        <form class="seller-apply-form" id="applyPromotionForm">
+                            <div class="seller-apply-field">
+                                <label>Chọn khuyến mãi</label>
+                                <select class="auth-input" id="promotionSelect" name="promotionId"></select>
                             </div>
-                            <div class="seller-promotion-body">
-                                <p><strong>Thời gian:</strong> 01/01/2025 - 31/01/2025</p>
-                                <p><strong>Mức giảm:</strong> 20%</p>
-                                <p><strong>Sản phẩm áp dụng:</strong> Tất cả</p>
+                            <div class="seller-apply-field">
+                                <label>Chọn sản phẩm</label>
+                                <select class="auth-input" id="productSelect" name="productSku"></select>
                             </div>
-                            <div class="seller-promotion-actions">
-                                <button class="seller-action-btn" data-action="edit-promo">
-                                    <i class="fas fa-edit"></i> Sửa
-                                </button>
-                                <button class="seller-action-btn" data-action="delete-promo">
-                                    <i class="fas fa-trash"></i> Xóa
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="seller-promotion-card">
-                            <div class="seller-promotion-header">
-                                <h3>Mua 2 tặng 1</h3>
-                                <span class="seller-promotion-status seller-promotion-status--pending">Sắp diễn ra</span>
-                            </div>
-                            <div class="seller-promotion-body">
-                                <p><strong>Thời gian:</strong> 15/02/2025 - 28/02/2025</p>
-                                <p><strong>Loại:</strong> Mua 2 tặng 1</p>
-                                <p><strong>Sản phẩm áp dụng:</strong> SP001, SP002</p>
-                            </div>
-                            <div class="seller-promotion-actions">
-                                <button class="seller-action-btn" data-action="edit-promo">
-                                    <i class="fas fa-edit"></i> Sửa
-                                </button>
-                                <button class="seller-action-btn" data-action="delete-promo">
-                                    <i class="fas fa-trash"></i> Xóa
-                                </button>
-                            </div>
-                        </div>
+                            <button type="submit" class="btn btn--primary">Áp dụng</button>
+                        </form>
+                        <div class="seller-apply-list" id="promoAssignments"></div>
                     </div>
                 </div>
 
                 <!-- Reports Tab -->
                 <div class="seller-tab-content" id="reportsTab">
                     <div class="seller-reports">
+                        <div class="seller-report-controls">
+                            <div class="seller-report-control">
+                                <label for="reportTypeSelect">Chọn loại báo cáo</label>
+                                <select id="reportTypeSelect" class="auth-input">
+                                    <option value="daily">Doanh thu theo ngày</option>
+                                    <option value="monthly">Doanh thu theo tháng</option>
+                                    <option value="topProducts">Sản phẩm bán chạy</option>
+                                    <option value="topViews">Sản phẩm được xem nhiều</option>
+                                </select>
+                            </div>
+                            <button class="btn btn--primary" id="viewReportBtn" type="button">Xem báo cáo</button>
+                        </div>
+                        <div class="auth-alert" id="reportMessage" role="alert" aria-live="polite"></div>
+                        <div class="seller-report-dynamic" id="reportDynamic"></div>
                         <div class="seller-report-cards">
                             <div class="seller-report-card">
                                 <div class="seller-report-icon seller-report-icon--sales">
@@ -209,6 +201,30 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="seller-export">
+                            <h2>Xuất báo cáo</h2>
+                            <div class="auth-alert" id="exportReportMessage" role="alert" aria-live="polite"></div>
+                            <form class="seller-export-form" id="exportReportForm">
+                                <div class="seller-export-grid">
+                                    <label>
+                                        Định dạng
+                                        <select class="auth-input" name="format">
+                                            <option value="excel">Excel (.csv)</option>
+                                            <option value="pdf">PDF (demo)</option>
+                                        </select>
+                                    </label>
+                                    <label>
+                                        Từ ngày
+                                        <input type="date" class="auth-input" name="fromDate" required>
+                                    </label>
+                                    <label>
+                                        Đến ngày
+                                        <input type="date" class="auth-input" name="toDate" required>
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn--primary">Xuất báo cáo</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -223,8 +239,12 @@
                 <button class="seller-modal__close" id="closePromoModal">&times;</button>
             </div>
             <form class="seller-modal__form" id="promotionForm">
+                <div class="auth-alert" id="promotionFormMessage" role="alert" aria-live="polite"></div>
                 <label class="auth-label">Tên chương trình</label>
                 <input type="text" class="auth-input" name="name" required>
+
+                <label class="auth-label">Mã khuyến mãi</label>
+                <input type="text" class="auth-input" name="code" placeholder="SALE50" required>
 
                 <label class="auth-label">Loại khuyến mãi</label>
                 <select class="auth-input" name="type" required>
@@ -294,6 +314,92 @@
             gap: 16px;
         }
 
+        .seller-apply-promo {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-top: 24px;
+        }
+
+        .seller-apply-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .seller-apply-field {
+            flex: 1;
+            min-width: 220px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .seller-apply-list {
+            margin-top: 16px;
+            border-top: 1px solid #eee;
+            padding-top: 16px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .seller-apply-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .seller-apply-remove {
+            border: none;
+            background: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+
+        .seller-report-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+            margin-bottom: 16px;
+        }
+
+        .seller-report-control {
+            flex: 1;
+            min-width: 220px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .seller-report-dynamic {
+            background: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            border: 1px dashed #ddd;
+        }
+
+        .seller-export {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .seller-export-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
         .seller-promotion-card {
             background: #fff;
             border-radius: 8px;
@@ -327,6 +433,11 @@
         .seller-promotion-status--pending {
             background: #fff3cd;
             color: #856404;
+        }
+
+        .seller-promotion-status--expired {
+            background: #f8d7da;
+            color: #721c24;
         }
 
         .seller-promotion-body {
@@ -473,77 +584,426 @@
         }
     </style>
 
+    <script src="./assets/js/app.js"></script>
     <script>
-        // Load seller info
-        const sellerData = sessionStorage.getItem('shopeeSeller');
-        if (sellerData) {
-            const seller = JSON.parse(sellerData);
-            document.getElementById('sellerName').textContent = seller.name || 'Người bán';
-        } else {
-            window.location.href = './seller-login.html';
-        }
+        (function() {
+            const sellerData = sessionStorage.getItem('shopeeSeller');
+            if (sellerData) {
+                const seller = JSON.parse(sellerData);
+                document.getElementById('sellerName').textContent = seller.name || 'Người bán';
+            } else {
+                window.location.href = './seller-login.html';
+                return;
+            }
 
-        // Tab switching
-        document.querySelectorAll('.seller-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                const targetTab = this.dataset.tab;
-                
-                // Update tab buttons
-                document.querySelectorAll('.seller-tab').forEach(t => t.classList.remove('seller-tab--active'));
-                this.classList.add('seller-tab--active');
-                
-                // Update tab content
-                document.querySelectorAll('.seller-tab-content').forEach(c => {
-                    c.classList.remove('seller-tab-content--active');
-                });
-                document.getElementById(targetTab + 'Tab').classList.add('seller-tab-content--active');
-            });
-        });
+            const promotionsList = document.getElementById('promotionsList');
+            const promotionForm = document.getElementById('promotionForm');
+            const promotionFormMessage = document.getElementById('promotionFormMessage');
+            const promotionModal = document.getElementById('addPromotionModal');
+            const addPromotionBtn = document.getElementById('addPromotionBtn');
+            const closePromoModal = document.getElementById('closePromoModal');
+            const cancelPromoBtn = document.getElementById('cancelPromoBtn');
+            const applyForm = document.getElementById('applyPromotionForm');
+            const applyMessage = document.getElementById('applyPromoMessage');
+            const promotionSelect = document.getElementById('promotionSelect');
+            const productSelect = document.getElementById('productSelect');
+            const assignmentsEl = document.getElementById('promoAssignments');
+            const reportTypeSelect = document.getElementById('reportTypeSelect');
+            const viewReportBtn = document.getElementById('viewReportBtn');
+            const reportDynamic = document.getElementById('reportDynamic');
+            const reportMessage = document.getElementById('reportMessage');
+            const exportForm = document.getElementById('exportReportForm');
+            const exportMessage = document.getElementById('exportReportMessage');
+            let editingPromotionId = null;
 
-        // Promotion modal
-        const addPromotionBtn = document.getElementById('addPromotionBtn');
-        const addPromotionModal = document.getElementById('addPromotionModal');
-        const closePromoModal = document.getElementById('closePromoModal');
-        const cancelPromoBtn = document.getElementById('cancelPromoBtn');
-        const promotionForm = document.getElementById('promotionForm');
+            function setAlert(element, text, type = 'info') {
+                if (!element) return;
+                if (!text) {
+                    element.textContent = '';
+                    element.className = 'auth-alert';
+                    return;
+                }
+                element.textContent = text;
+                element.className = `auth-alert auth-alert--${type}`;
+            }
 
-        addPromotionBtn.addEventListener('click', () => {
-            addPromotionModal.style.display = 'flex';
-        });
+            function determinePromoStatus(promo) {
+                const now = new Date();
+                const start = new Date(promo.startDate);
+                const end = new Date(promo.endDate);
+                if (end < now) return 'expired';
+                if (start > now) return 'pending';
+                return 'active';
+            }
 
-        closePromoModal.addEventListener('click', () => {
-            addPromotionModal.style.display = 'none';
-        });
+            function formatDateRange(start, end) {
+                return `${start.split('-').reverse().join('/')} - ${end.split('-').reverse().join('/')}`;
+            }
 
-        cancelPromoBtn.addEventListener('click', () => {
-            addPromotionModal.style.display = 'none';
-        });
+            function populateSelects() {
+                const promotions = ShopeeApp.getPromotions();
+                const products = ShopeeApp.getSellerProducts();
+                if (promotionSelect) {
+                    promotionSelect.innerHTML = promotions.length
+                        ? promotions.map(promo => `<option value="${promo.id}">${promo.name} (${promo.code})</option>`).join('')
+                        : '<option value="">Chưa có khuyến mãi</option>';
+                }
+                if (productSelect) {
+                    productSelect.innerHTML = products.length
+                        ? products.map(product => `<option value="${product.sku}">${product.name} (${product.sku})</option>`).join('')
+                        : '<option value="">Chưa có sản phẩm</option>';
+                }
+            }
 
-        promotionForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Khuyến mãi đã được tạo (demo)');
-            addPromotionModal.style.display = 'none';
-            promotionForm.reset();
-        });
+            function renderPromotions() {
+                const promotions = ShopeeApp.getPromotions();
+                populateSelects();
+                if (!promotions.length) {
+                    promotionsList.innerHTML = '<div class="seller-empty">Chưa có chương trình khuyến mãi</div>';
+                    return;
+                }
+                promotionsList.innerHTML = promotions.map(promo => {
+                    const status = determinePromoStatus(promo);
+                    const statusLabel = status === 'active' ? 'Đang hoạt động' : status === 'pending' ? 'Sắp diễn ra' : 'Đã kết thúc';
+                    const statusClass = {
+                        active: 'seller-promotion-status--active',
+                        pending: 'seller-promotion-status--pending',
+                        expired: 'seller-promotion-status--expired'
+                    }[status];
+                    const productLabel = promo.products.includes('all') ? 'Tất cả' : promo.products.join(', ');
+                    return `
+                        <div class="seller-promotion-card" data-id="${promo.id}">
+                            <div class="seller-promotion-header">
+                                <h3>${promo.name}</h3>
+                                <span class="seller-promotion-status ${statusClass}">${statusLabel}</span>
+                            </div>
+                            <div class="seller-promotion-body">
+                                <p><strong>Mã:</strong> ${promo.code}</p>
+                                <p><strong>Thời gian:</strong> ${formatDateRange(promo.startDate, promo.endDate)}</p>
+                                <p><strong>Mức giảm:</strong> ${promo.discount}%</p>
+                                <p><strong>Loại:</strong> ${promo.type}</p>
+                                <p><strong>Sản phẩm áp dụng:</strong> ${productLabel}</p>
+                            </div>
+                            <div class="seller-promotion-actions">
+                                <button class="seller-action-btn" data-action="edit-promo" data-id="${promo.id}">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </button>
+                                <button class="seller-action-btn" data-action="delete-promo" data-id="${promo.id}">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
 
-        // Delete promotion
-        document.querySelectorAll('[data-action="delete-promo"]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (confirm('Bạn có chắc muốn xóa khuyến mãi này?')) {
-                    this.closest('.seller-promotion-card').remove();
+            function openPromotionModal(promo = null) {
+                editingPromotionId = promo ? promo.id : null;
+                promotionForm.reset();
+                setAlert(promotionFormMessage, '');
+                if (promo) {
+                    promotionForm.name.value = promo.name;
+                    promotionForm.code.value = promo.code;
+                    promotionForm.type.value = promo.type;
+                    promotionForm.discount.value = promo.discount;
+                    promotionForm.startDate.value = promo.startDate;
+                    promotionForm.endDate.value = promo.endDate;
+                    Array.from(promotionForm.products.options).forEach(option => {
+                        option.selected = promo.products.includes(option.value);
+                    });
+                } else {
+                    promotionForm.code.value = '';
+                    Array.from(promotionForm.products.options).forEach(option => option.selected = option.value === 'all');
+                }
+                promotionModal.style.display = 'flex';
+            }
+
+            function closePromotionModal() {
+                promotionModal.style.display = 'none';
+                editingPromotionId = null;
+            }
+
+            addPromotionBtn.addEventListener('click', () => openPromotionModal());
+            closePromoModal.addEventListener('click', closePromotionModal);
+            cancelPromoBtn.addEventListener('click', closePromotionModal);
+            promotionModal.addEventListener('click', (event) => {
+                if (event.target === promotionModal) {
+                    closePromotionModal();
                 }
             });
-        });
+            document.addEventListener('keyup', (event) => {
+                if (event.key === 'Escape') {
+                    closePromotionModal();
+                }
+            });
 
-        // Simple chart placeholder
-        const canvas = document.getElementById('revenueChart');
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#ddd';
-            ctx.font = '16px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('Biểu đồ doanh thu (Demo)', canvas.width / 2, canvas.height / 2);
-        }
+            promotionForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const data = new FormData(promotionForm);
+                const selectedProducts = Array.from(promotionForm.products.selectedOptions).map(opt => opt.value);
+                const products = selectedProducts.includes('all') ? ['all'] : selectedProducts;
+                const code = (data.get('code') || '').trim().toUpperCase();
+                const payload = {
+                    id: editingPromotionId || `promo-${Date.now()}`,
+                    name: (data.get('name') || '').trim(),
+                    type: data.get('type'),
+                    discount: Number(data.get('discount') || 0),
+                    startDate: data.get('startDate'),
+                    endDate: data.get('endDate'),
+                    products,
+                    code
+                };
+
+                const errors = [];
+                if (!payload.name) errors.push('Tên khuyến mãi không được để trống');
+                if (!code) {
+                    errors.push('Mã khuyến mãi không được để trống');
+                } else if (!/^[A-Z0-9_-]{3,}$/.test(code)) {
+                    errors.push('Mã khuyến mãi chỉ gồm chữ, số, dấu gạch (tối thiểu 3 ký tự)');
+                }
+                if (!payload.startDate || !payload.endDate || payload.startDate > payload.endDate) {
+                    errors.push('Khoảng thời gian không hợp lệ');
+                }
+                if (!payload.discount || payload.discount <= 0) {
+                    errors.push('Mức giảm phải lớn hơn 0');
+                }
+                if (payload.discount > 100) {
+                    errors.push('Mức giảm không được vượt quá 100%');
+                }
+
+                const promotions = ShopeeApp.getPromotions();
+                const existingCode = promotions.find(promo =>
+                    promo.code.toLowerCase() === payload.code.toLowerCase() && promo.id !== payload.id
+                );
+                if (existingCode) {
+                    errors.push('Mã khuyến mãi đã tồn tại');
+                }
+
+                if (errors.length) {
+                    setAlert(promotionFormMessage, errors.join(' • '), 'error');
+                    return;
+                }
+
+                const index = promotions.findIndex(promo => promo.id === payload.id);
+                if (index > -1) {
+                    promotions[index] = { ...promotions[index], ...payload };
+                } else {
+                    promotions.push(payload);
+                }
+                ShopeeApp.savePromotions(promotions);
+                ShopeeApp.toast(editingPromotionId ? 'Đã cập nhật khuyến mãi' : 'Đã tạo khuyến mãi mới', 'success');
+                closePromotionModal();
+                renderPromotions();
+            });
+
+            promotionsList.addEventListener('click', (event) => {
+                const actionBtn = event.target.closest('[data-action]');
+                if (!actionBtn) return;
+                const promoId = actionBtn.dataset.id;
+                const promotions = ShopeeApp.getPromotions();
+                const promo = promotions.find(item => item.id === promoId);
+                if (actionBtn.dataset.action === 'edit-promo' && promo) {
+                    openPromotionModal(promo);
+                    return;
+                }
+                if (actionBtn.dataset.action === 'delete-promo') {
+                    if (confirm('Bạn có chắc muốn xóa khuyến mãi này?')) {
+                        const next = promotions.filter(item => item.id !== promoId);
+                        ShopeeApp.savePromotions(next);
+                        ShopeeApp.toast('Đã xóa khuyến mãi', 'success');
+                        renderPromotions();
+                    }
+                }
+            });
+
+            function renderAssignments() {
+                const assignments = ShopeeApp.getPromoAssignments();
+                const promotions = ShopeeApp.getPromotions();
+                const products = ShopeeApp.getSellerProducts();
+                const entries = Object.entries(assignments);
+                if (!entries.length) {
+                    assignmentsEl.innerHTML = '<p class="seller-empty">Chưa áp dụng khuyến mãi nào</p>';
+                    return;
+                }
+
+                const html = entries.map(([sku, info]) => {
+                    const product = products.find(item => item.sku === sku);
+                    const promo = promotions.find(item => item.id === info.promoId);
+                    if (!product || !promo) {
+                        return '';
+                    }
+                    return `
+                        <div class="seller-apply-item">
+                            <div>
+                                <strong>${product.name}</strong>
+                                <p>${promo.name} (${promo.code})</p>
+                            </div>
+                            <button class="seller-apply-remove" data-remove-sku="${sku}">Gỡ</button>
+                        </div>
+                    `;
+                }).join('');
+                assignmentsEl.innerHTML = html || '<p class="seller-empty">Không thể hiển thị danh sách áp dụng</p>';
+            }
+
+            assignmentsEl.addEventListener('click', (event) => {
+                const removeBtn = event.target.closest('[data-remove-sku]');
+                if (!removeBtn) return;
+                const sku = removeBtn.dataset.removeSku;
+                const assignments = ShopeeApp.getPromoAssignments();
+                delete assignments[sku];
+                ShopeeApp.savePromoAssignments(assignments);
+                renderAssignments();
+                ShopeeApp.toast('Đã gỡ khuyến mãi khỏi sản phẩm', 'success');
+            });
+
+            applyForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const promoId = promotionSelect.value;
+                const sku = productSelect.value;
+                if (!promoId || !sku) {
+                    setAlert(applyMessage, 'Vui lòng chọn khuyến mãi và sản phẩm', 'error');
+                    return;
+                }
+                const promotions = ShopeeApp.getPromotions();
+                const promo = promotions.find(item => item.id === promoId);
+                if (!promo) {
+                    setAlert(applyMessage, 'Khuyến mãi không tồn tại', 'error');
+                    return;
+                }
+                if (determinePromoStatus(promo) === 'expired') {
+                    setAlert(applyMessage, 'Không thể áp dụng khuyến mãi đã hết hạn', 'error');
+                    return;
+                }
+                const assignments = ShopeeApp.getPromoAssignments();
+                const override = assignments[sku];
+                assignments[sku] = { promoId, appliedAt: Date.now() };
+                ShopeeApp.savePromoAssignments(assignments);
+                renderAssignments();
+                setAlert(applyMessage, override ? 'Đã ghi đè khuyến mãi trên sản phẩm' : 'Đã áp dụng khuyến mãi', 'success');
+            });
+
+            function renderReport(type) {
+                const reports = ShopeeApp.getReports();
+                let rows = [];
+                if (type === 'daily') {
+                    rows = reports.dailyRevenue || [];
+                } else if (type === 'monthly') {
+                    rows = reports.monthlyRevenue || [];
+                } else if (type === 'topProducts') {
+                    rows = ShopeeApp.getSellerProducts().map(product => ({
+                        label: product.name,
+                        value: Math.max(5, 200 - product.stock * 2)
+                    })).sort((a, b) => b.value - a.value).slice(0, 5);
+                } else if (type === 'topViews') {
+                    rows = ShopeeApp.getSellerProducts().map(product => ({
+                        label: product.name,
+                        value: product.stock * 12 + 500
+                    })).sort((a, b) => b.value - a.value).slice(0, 5);
+                }
+
+                if (!rows.length) {
+                    setAlert(reportMessage, 'Không có dữ liệu cho loại báo cáo này', 'error');
+                    reportDynamic.innerHTML = '';
+                    return;
+                }
+                setAlert(reportMessage, '');
+
+                if (type === 'daily' || type === 'monthly') {
+                    const header = type === 'daily' ? 'Ngày' : 'Tháng';
+                    reportDynamic.innerHTML = `
+                        <table class="seller-table">
+                            <thead>
+                                <tr>
+                                    <th>${header}</th>
+                                    <th>Doanh thu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows.map(row => `
+                                    <tr>
+                                        <td>${row.date || row.month}</td>
+                                        <td>${ShopeeApp.formatCurrency(row.total)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                } else {
+                    reportDynamic.innerHTML = rows.map(row => `
+                        <div class="seller-apply-item">
+                            <div>
+                                <strong>${row.label}</strong>
+                            </div>
+                            <span>${row.value.toLocaleString('vi-VN')}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            viewReportBtn.addEventListener('click', () => {
+                renderReport(reportTypeSelect.value);
+            });
+
+            function downloadReport(rows, format) {
+                const header = 'Thời gian,Tổng tiền';
+                const body = rows.map(row => `${row.date || row.month},${row.total}`).join('\n');
+                const content = [header, body].join('\n');
+                const blobType = format === 'pdf' ? 'application/pdf' : 'text/csv';
+                const extension = format === 'pdf' ? 'pdf' : 'csv';
+                const blob = new Blob([content], { type: blobType });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `report-${Date.now()}.${extension}`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            }
+
+            exportForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const data = new FormData(exportForm);
+                const format = data.get('format');
+                const fromDate = data.get('fromDate');
+                const toDate = data.get('toDate');
+                if (!fromDate || !toDate || fromDate > toDate) {
+                    setAlert(exportMessage, 'Khoảng thời gian không hợp lệ', 'error');
+                    return;
+                }
+                const rows = (ShopeeApp.getReports().dailyRevenue || []).filter(row => row.date >= fromDate && row.date <= toDate);
+                if (!rows.length) {
+                    setAlert(exportMessage, 'Không có dữ liệu trong khoảng thời gian này', 'error');
+                    return;
+                }
+                downloadReport(rows, format);
+                setAlert(exportMessage, 'Đã xuất báo cáo thành công', 'success');
+            });
+
+            document.querySelectorAll('.seller-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.dataset.tab;
+                    document.querySelectorAll('.seller-tab').forEach(t => t.classList.remove('seller-tab--active'));
+                    this.classList.add('seller-tab--active');
+                    document.querySelectorAll('.seller-tab-content').forEach(content => {
+                        content.classList.remove('seller-tab-content--active');
+                    });
+                    document.getElementById(`${targetTab}Tab`).classList.add('seller-tab-content--active');
+                });
+            });
+
+            const canvas = document.getElementById('revenueChart');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ddd';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Biểu đồ doanh thu (Demo)', canvas.width / 2, canvas.height / 2);
+            }
+
+            renderPromotions();
+            renderAssignments();
+            renderReport('daily');
+        })();
     </script>
 </body>
 </html>

@@ -17,40 +17,68 @@
         </a>
         <div class="auth-card">
             <h1 class="auth-title">Đăng nhập</h1>
+            <div class="auth-alert" id="signinMessage" role="alert" aria-live="polite"></div>
             <form class="auth-form" id="signinForm">
-                <label class="auth-label" for="signin-email">Email</label>
-                <input type="email" name="email" id="signin-email" class="auth-input" placeholder="email@domain.com">
+                <label class="auth-label" for="signin-email">Email / Số điện thoại</label>
+                <input type="text" name="email" id="signin-email" class="auth-input" placeholder="email@domain.com hoặc 0123456789">
 
                 <label class="auth-label" for="signin-password">Mật khẩu</label>
                 <input type="password" name="password" id="signin-password" class="auth-input" placeholder="••••••••">
 
                 <button type="submit" class="btn btn--primary auth-submit">Đăng nhập</button>
             </form>
-            <p class="auth-switch">
+            <div class="auth-switch">
                 Chưa có tài khoản?
                 <a href="./signup.html">Đăng ký ngay</a>
-            </p>
+                ·
+                <a href="./forgot-password.html">Quên mật khẩu?</a>
+            </div>
         </div>
     </div>
 
+    <script src="./assets/js/app.js"></script>
     <script>
         const form = document.getElementById('signinForm');
+        const messageBox = document.getElementById('signinMessage');
+
+        function setMessage(text, type = 'info') {
+            if (!messageBox) return;
+            messageBox.textContent = text || '';
+            messageBox.className = `auth-alert auth-alert--${type}`;
+        }
+
         form.addEventListener('submit', (event) => {
             event.preventDefault();
             const data = new FormData(form);
-            const storedUser = sessionStorage.getItem('shopeeUser');
-            const parsedUser = storedUser ? JSON.parse(storedUser) : {};
+            const identity = (data.get('email') || '').trim();
+            const password = data.get('password') || '';
 
-            const user = {
-                name: parsedUser.name || 'Người dùng Shopee',
-                email: data.get('email') || parsedUser.email || 'user@example.com',
-                phone: parsedUser.phone || 'Chưa cập nhật',
-                address: parsedUser.address || 'Đang cập nhật',
-                memberSince: parsedUser.memberSince || new Date().getFullYear()
-            };
+            if (!identity) {
+                setMessage('Vui lòng nhập email hoặc số điện thoại', 'error');
+                return;
+            }
+
+            if (!password) {
+                setMessage('Vui lòng nhập mật khẩu', 'error');
+                return;
+            }
+
+            const user = ShopeeApp.findUser(identity);
+            if (!user) {
+                setMessage('Tài khoản không tồn tại', 'error');
+                return;
+            }
+
+            if (password !== user.password) {
+                setMessage('Mật khẩu không đúng', 'error');
+                return;
+            }
 
             sessionStorage.setItem('shopeeUser', JSON.stringify(user));
-            window.location.href = './profile.html';
+            setMessage('Đăng nhập thành công! Đang chuyển trang...', 'success');
+            setTimeout(() => {
+                window.location.href = './profile.html';
+            }, 600);
         });
     </script>
 </body>

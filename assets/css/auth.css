@@ -36,6 +36,50 @@ body.auth-page {
     text-align: center;
 }
 
+.auth-section {
+    margin-bottom: 24px;
+}
+
+.auth-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    color: #333;
+}
+
+.auth-help {
+    font-size: 13px;
+    color: #666;
+    margin-top: 8px;
+}
+
+.auth-alert {
+    display: none;
+    margin-bottom: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.auth-alert--info {
+    display: block;
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.auth-alert--success {
+    display: block;
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.auth-alert--error {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
 .auth-form {
     display: flex;
     flex-direction: column;
